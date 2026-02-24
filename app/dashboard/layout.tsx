@@ -1,15 +1,18 @@
 'use client'
 
+import {
+  IconLayoutSidebarLeftCollapse,
+  IconLogout,
+  IconSettings
+} from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { IconLayoutSidebarLeftCollapse, IconLogout, IconSettings, IconUser } from '@tabler/icons-react'
 
 import { AppSidebar } from '@/components/app-sidebar'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
@@ -79,7 +82,9 @@ export default function DashboardLayout({
                 </span>
                 <div className='flex flex-col leading-tight'>
                   <span className='text-sm font-semibold'>Prashanth Ja</span>
-                  <span className='text-xs text-muted-foreground'>prashanth@sparktech.dev</span>
+                  <span className='text-xs text-muted-foreground'>
+                    prashanth@sparktech.dev
+                  </span>
                 </div>
               </div>
 

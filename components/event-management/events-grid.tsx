@@ -4,6 +4,7 @@ import { IconPlus } from '@tabler/icons-react'
 import { useState } from 'react'
 
 import { EventCard } from '@/components/event-management/event-card'
+import { EventCardSkeleton } from '@/components/event-management/event-card-skeleton'
 import { EventDetailDialog } from '@/components/event-management/event-detail-dialog'
 import { EventFormDialog } from '@/components/event-management/event-form-dialog'
 import {
@@ -36,9 +37,11 @@ async function apiDeleteEvent(id: string): Promise<void> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 10
+const SKELETON_COUNT = 10
 
 interface EventsGridProps {
   initialEvents: Event[]
+  isLoading?: boolean
 }
 
 function buildPageNumbers(
@@ -61,7 +64,7 @@ function buildPageNumbers(
   return pages
 }
 
-export function EventsGrid({ initialEvents }: EventsGridProps) {
+export function EventsGrid({ initialEvents, isLoading = false }: EventsGridProps) {
   const [events, setEvents] = useState<Event[]>(initialEvents)
   const [page, setPage] = useState(1)
 
@@ -91,6 +94,35 @@ export function EventsGrid({ initialEvents }: EventsGridProps) {
     setEvents((prev) => prev.filter((e) => e.id !== deleteTarget.id))
     setDeleteTarget(null)
     if (paginatedEvents.length === 1 && page > 1) setPage((p) => p - 1)
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        {/* ── Toolbar skeleton ─────────────────────────────────────────── */}
+        <div className='flex items-center justify-between'>
+          <div className='h-4 w-24 rounded-md bg-muted animate-pulse' />
+          <div className='h-9 w-32 rounded-xl bg-muted animate-pulse' />
+        </div>
+
+        {/* ── Card grid skeleton ───────────────────────────────────────── */}
+        <div className='grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            <EventCardSkeleton key={i} />
+          ))}
+        </div>
+
+        {/* ── Pagination skeleton ──────────────────────────────────────── */}
+        <div className='flex items-center justify-between'>
+          <div className='h-4 w-40 rounded-md bg-muted animate-pulse' />
+          <div className='flex gap-1'>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className='h-9 w-9 rounded-xl bg-muted animate-pulse' />
+            ))}
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (

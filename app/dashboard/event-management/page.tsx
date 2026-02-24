@@ -1,7 +1,18 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
 import { EventsGrid } from '@/components/event-management/events-grid'
 import { MOCK_EVENTS } from '@/lib/mock-data'
 
 export default function EventManagementPage() {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoading(false), 1200)
+    return () => clearTimeout(t)
+  }, [])
+
   return (
     <div className='flex flex-col gap-6'>
       <div>
@@ -11,7 +22,7 @@ export default function EventManagementPage() {
         </p>
       </div>
 
-      <EventsGrid initialEvents={MOCK_EVENTS} />
+      <EventsGrid initialEvents={MOCK_EVENTS} isLoading={isLoading} />
     </div>
   )
 }
