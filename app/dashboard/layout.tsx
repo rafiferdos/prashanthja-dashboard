@@ -90,7 +90,7 @@ export default function DashboardLayout({
               <IconChevronDown
                 className='
                   hidden size-4 text-muted-foreground
-                  transition-transform duration-200 group-data-[popup-open]:rotate-180 sm:block
+                  transition-transform duration-200 group-data-popup-open:rotate-180 sm:block
                 '
               />
             </DropdownMenuTrigger>
