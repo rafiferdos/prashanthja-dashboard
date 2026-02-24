@@ -15,7 +15,6 @@ import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
@@ -69,7 +68,16 @@ export function EventDetailDialog({
         setImgIndex(0)
       }}
     >
-      <DialogContent className='max-w-lg p-0 overflow-hidden' showCloseButton>
+      <DialogContent
+        className='
+          max-w-lg p-0 overflow-hidden border-0
+          bg-background/80 backdrop-blur-2xl backdrop-saturate-150
+          ring-1 ring-foreground/8
+          shadow-[0_32px_80px_-8px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.06)]
+          duration-300!
+        '
+        showCloseButton={false}
+      >
         {/* Image carousel */}
         <div className='relative h-52 w-full bg-muted'>
           <Image
@@ -170,7 +178,6 @@ export function EventDetailDialog({
             </div>
           </div>
 
-          <DialogFooter showCloseButton />
         </div>
       </DialogContent>
     </Dialog>

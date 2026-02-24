@@ -1,7 +1,7 @@
 'use client'
 
 import {
-  IconLayoutSidebarLeftCollapse,
+  IconChevronDown,
   IconLogout,
   IconSettings
 } from '@tabler/icons-react'
@@ -60,10 +60,10 @@ export default function DashboardLayout({
                 <span className='text-sm font-semibold'>Prashanth Ja</span>
                 <span className='text-[11px] text-muted-foreground'>Admin</span>
               </span>
-              <IconLayoutSidebarLeftCollapse
+              <IconChevronDown
                 className='
-                  hidden size-4 rotate-90 text-muted-foreground
-                  transition-transform group-data-open:-rotate-90 sm:block
+                  hidden size-4 text-muted-foreground
+                  transition-transform duration-200 group-data-[popup-open]:rotate-180 sm:block
                 '
               />
             </DropdownMenuTrigger>
