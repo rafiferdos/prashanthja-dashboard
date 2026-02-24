@@ -42,7 +42,9 @@ export function TableSkeleton({
                   <TableCell key={colIdx}>
                     <Skeleton
                       className='h-4'
-                      style={{ width: `${60 + ((rowIdx * 3 + colIdx * 7) % 35)}%` }}
+                      style={{
+                        width: `${60 + ((rowIdx * 3 + colIdx * 7) % 35)}%`
+                      }}
                     />
                   </TableCell>
                 ))}

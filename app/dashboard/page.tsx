@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { IconCreditCard, IconEye, IconUsers } from '@tabler/icons-react'
+import { useEffect, useState } from 'react'
 
 import { ChartSkeleton } from '@/components/dashboard/chart-skeleton'
 import { RecentUsersTable } from '@/components/dashboard/recent-users-table'
@@ -59,13 +59,15 @@ export default function DashboardPage() {
 
       {/* Stats Row */}
       <div className='grid gap-4 md:grid-cols-3'>
-        {isLoading
-          ? Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)
-          : statCards.map((card) => <StatCard key={card.title} {...card} />)}
+        {isLoading ?
+          Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)
+        : statCards.map((card) => <StatCard key={card.title} {...card} />)}
       </div>
 
       {/* Chart Section */}
-      {isLoading ? <ChartSkeleton /> : <ChartAreaStacked />}
+      {isLoading ?
+        <ChartSkeleton />
+      : <ChartAreaStacked />}
 
       {/* Recent Users Table Section */}
       <div className='flex flex-col gap-4'>
@@ -75,11 +77,9 @@ export default function DashboardPage() {
             A list of users who recently joined or logged in.
           </p>
         </div>
-        {isLoading ? (
+        {isLoading ?
           <TableSkeleton rows={RECENT_USER_COUNT} cols={5} />
-        ) : (
-          <RecentUsersTable users={recentUsers} />
-        )}
+        : <RecentUsersTable users={recentUsers} />}
       </div>
     </div>
   )

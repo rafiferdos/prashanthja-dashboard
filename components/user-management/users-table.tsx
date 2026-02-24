@@ -8,9 +8,9 @@ import {
 } from '@tabler/icons-react'
 import { useState } from 'react'
 
+import { UserInfoDialog } from '@/components/dashboard/user-info-dialog'
 import { TableSkeleton } from '@/components/shared/table-skeleton'
 import { UserStatusBadge } from '@/components/shared/user-status-badge'
-import { UserInfoDialog } from '@/components/dashboard/user-info-dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,7 +82,10 @@ interface UsersTableProps {
   isLoading?: boolean
 }
 
-export function UsersTable({ initialUsers, isLoading = false }: UsersTableProps) {
+export function UsersTable({
+  initialUsers,
+  isLoading = false
+}: UsersTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers)
   const [page, setPage] = useState(1)
 
@@ -194,7 +197,10 @@ export function UsersTable({ initialUsers, isLoading = false }: UsersTableProps)
                       variant='ghost'
                       size='icon-sm'
                       aria-label='Edit user'
-                      onClick={(e) => { e.stopPropagation(); openEdit(user) }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        openEdit(user)
+                      }}
                     >
                       <IconEdit className='h-4 w-4' />
                     </Button>
@@ -208,7 +214,10 @@ export function UsersTable({ initialUsers, isLoading = false }: UsersTableProps)
                           'Unblock user'
                         : 'Block user'
                       }
-                      onClick={(e) => { e.stopPropagation(); setBlockTarget(user) }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setBlockTarget(user)
+                      }}
                     >
                       {user.status === 'Blocked' ?
                         <IconLockOpen className='h-4 w-4 text-emerald-500' />
@@ -220,7 +229,10 @@ export function UsersTable({ initialUsers, isLoading = false }: UsersTableProps)
                       variant='ghost'
                       size='icon-sm'
                       aria-label='Delete user'
-                      onClick={(e) => { e.stopPropagation(); setDeleteTarget(user) }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setDeleteTarget(user)
+                      }}
                     >
                       <IconTrash className='h-4 w-4 text-destructive' />
                     </Button>
