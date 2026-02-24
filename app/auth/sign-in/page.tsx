@@ -11,11 +11,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signIn } from '@/lib/api/auth'
+import { useAuthStore } from '@/store/auth.store'
 import type { AuthError } from '@/types/auth'
 
 export default function SignInPage() {
   const router = useRouter()
   const params = useSearchParams()
+  const setAuth = useAuthStore((s) => s.setAuth)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -48,8 +50,8 @@ export default function SignInPage() {
     setErrors({})
 
     try {
-      await signIn({ email: email.trim(), password })
-      // TODO: persist token to cookie / sessionStorage
+      const res = await signIn({ email: email.trim(), password })
+      setAuth(res.user, res.accessToken)
       router.push('/dashboard')
     } catch (err) {
       const ae = err as AuthError

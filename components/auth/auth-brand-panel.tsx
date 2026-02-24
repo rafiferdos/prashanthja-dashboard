@@ -12,7 +12,7 @@ interface AuthBrandPanelProps {
 
 export function AuthBrandPanel({
   quote = 'The platform that puts your team first.',
-  author = 'SparkTech Admin Suite'
+  author = 'Friendzy Admin Suite'
 }: AuthBrandPanelProps) {
   return (
     <div
@@ -32,13 +32,13 @@ export function AuthBrandPanel({
       <div className='relative z-10 flex items-center gap-3'>
         <Image
           src='/assets/logo.svg'
-          alt='SparkTech'
+          alt='Friendzy'
           width={36}
           height={36}
           className='invert'
           priority
         />
-        <span className='text-lg font-bold tracking-tight'>SparkTech</span>
+        <span className='text-lg font-bold tracking-tight'>Friendzy</span>
       </div>
 
       {/* Center content */}

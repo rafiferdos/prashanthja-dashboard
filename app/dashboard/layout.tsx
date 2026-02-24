@@ -17,6 +17,21 @@ import {
   SidebarProvider,
   SidebarTrigger
 } from '@/components/ui/sidebar'
+import { useAuthStore } from '@/store/auth.store'
+import { useProfileStore } from '@/store/profile.store'
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join('')
+}
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
 
 export default function DashboardLayout({
   children
@@ -24,6 +39,20 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
+  const user = useAuthStore((s) => s.user)
+  const signOut = useAuthStore((s) => s.signOut)
+  const resetProfile = useProfileStore((s) => s.reset)
+
+  const displayName = user?.name ?? 'User'
+  const displayEmail = user?.email ?? ''
+  const displayRole = user?.role ?? 'Admin'
+  const initials = getInitials(displayName)
+
+  const handleLogout = () => {
+    signOut()
+    resetProfile()
+    router.push('/auth/sign-in')
+  }
 
   return (
     <SidebarProvider>
@@ -49,12 +78,12 @@ export default function DashboardLayout({
                   text-xs font-bold text-white shadow-sm
                 '
               >
-                PJ
+                {initials}
               </span>
               {/* Name + role — hidden on small screens */}
               <span className='hidden flex-col items-start leading-tight sm:flex'>
-                <span className='text-sm font-semibold'>Prashanth Ja</span>
-                <span className='text-[11px] text-muted-foreground'>Admin</span>
+                <span className='text-sm font-semibold'>{displayName}</span>
+                <span className='text-[11px] text-muted-foreground'>{displayRole}</span>
               </span>
               <IconChevronDown
                 className='
@@ -74,12 +103,12 @@ export default function DashboardLayout({
                     text-sm font-bold text-white shadow
                   '
                 >
-                  PJ
+                  {initials}
                 </span>
                 <div className='flex flex-col leading-tight'>
-                  <span className='text-sm font-semibold'>Prashanth JA</span>
+                  <span className='text-sm font-semibold'>{displayName}</span>
                   <span className='text-xs text-muted-foreground'>
-                    admin@example.com
+                    {displayEmail}
                   </span>
                 </div>
               </div>
@@ -100,7 +129,7 @@ export default function DashboardLayout({
               <DropdownMenuItem
                 variant='destructive'
                 className='gap-3'
-                onClick={() => router.push('/auth/sign-in')}
+                onClick={handleLogout}
               >
                 <IconLogout className='size-4' />
                 <span>Log out</span>
@@ -114,3 +143,4 @@ export default function DashboardLayout({
     </SidebarProvider>
   )
 }
+

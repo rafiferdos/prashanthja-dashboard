@@ -38,7 +38,7 @@ export interface SignInResponse {
 
 export interface ForgotPasswordResponse {
   message: string
-  /** Masked email shown to user e.g. "p***@sparktech.com" */
+  /** Masked email shown to user e.g. "a***@example.com" */
   maskedEmail: string
   /** Expiry in seconds */
   expiresIn: number

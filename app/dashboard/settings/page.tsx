@@ -15,6 +15,8 @@ import {
   updateProfile,
   uploadProfilePhoto
 } from '@/lib/api/settings'
+import { useAuthStore } from '@/store/auth.store'
+import { useProfileStore } from '@/store/profile.store'
 import type { ProfileSettings } from '@/types/api'
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -65,6 +67,10 @@ function getInitials(name: string) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
+  const storeProfile = useProfileStore((s) => s.profile)
+  const storeSetProfile = useProfileStore((s) => s.setProfile)
+  const patchUser = useAuthStore((s) => s.patchUser)
+
   const [profile, setProfile] = useState<ProfileSettings | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -86,15 +92,28 @@ export default function SettingsPage() {
 
   // ── Load profile ────────────────────────────────────────────────────────────
   useEffect(() => {
+    // If we already have a cached profile in the store, use it immediately
+    if (storeProfile) {
+      setProfile(storeProfile)
+      setName(storeProfile.name)
+      setEmail(storeProfile.email)
+      setAbout(storeProfile.about)
+      setPhotoPreview(storeProfile.photoUrl)
+      setIsLoading(false)
+      return
+    }
+
     getProfile()
       .then((data) => {
         setProfile(data)
+        storeSetProfile(data) // cache in store
         setName(data.name)
         setEmail(data.email)
         setAbout(data.about)
         setPhotoPreview(data.photoUrl)
       })
       .finally(() => setIsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // ── Photo selection ─────────────────────────────────────────────────────────
@@ -147,6 +166,11 @@ export default function SettingsPage() {
 
       if (res.success && res.data) {
         setProfile(res.data)
+        storeSetProfile(res.data)          // sync full profile to store
+        patchUser({                         // keep topbar name / avatar in sync
+          name: res.data.name,
+          photoUrl: res.data.photoUrl
+        })
         setPhotoPreview(res.data.photoUrl)
         setPendingPhotoFile(null)
         setSaveStatus('saved')

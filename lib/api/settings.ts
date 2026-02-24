@@ -24,7 +24,7 @@ import type {
 
 const MOCK_PROFILE: ProfileSettings = {
   id: 'usr_admin_001',
-  name: 'Prashanth JA',
+  name: 'Admin User',
   email: 'admin@example.com',
   about:
     'Product manager and admin. Passionate about building great user experiences and data-driven products.',
