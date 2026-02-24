@@ -9,7 +9,7 @@ export function ChartSkeleton() {
         <Skeleton className='h-4 w-64' />
       </CardHeader>
       <CardContent>
-        <Skeleton className='h-[300px] w-full rounded-lg' />
+        <Skeleton className='h-75 w-full rounded-lg' />
       </CardContent>
     </Card>
   )
