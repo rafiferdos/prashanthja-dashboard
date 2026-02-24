@@ -6,11 +6,41 @@ import {
   IconFileText,
   IconLock
 } from '@tabler/icons-react'
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
-import { RichTextEditor } from '@/components/content-management/rich-text-editor'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+const RichTextEditor = dynamic(
+  () =>
+    import('@/components/content-management/rich-text-editor').then(
+      (m) => m.RichTextEditor
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex flex-col overflow-hidden rounded-2xl border ring-1 ring-foreground/5'>
+        <div className='flex flex-wrap gap-1 border-b bg-muted/40 px-2 py-1.5'>
+          {Array.from({ length: 14 }).map((_, i) => (
+            <Skeleton key={i} className='h-8 w-8 rounded-md' />
+          ))}
+        </div>
+        <div className='flex flex-col gap-3 px-8 py-6'>
+          <Skeleton className='h-8 w-2/3' />
+          <Skeleton className='h-4 w-1/4' />
+          <Skeleton className='mt-2 h-5 w-1/3' />
+          <Skeleton className='h-4 w-full' />
+          <Skeleton className='h-4 w-5/6' />
+          <Skeleton className='mt-2 h-5 w-1/3' />
+          <Skeleton className='h-4 w-full' />
+          <Skeleton className='h-4 w-4/5' />
+        </div>
+      </div>
+    )
+  }
+)
 
 // ─── Default content ──────────────────────────────────────────────────────────
 const PRIVACY_DEFAULT = [
