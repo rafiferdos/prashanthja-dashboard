@@ -45,8 +45,8 @@ export const useAuthStore = create<AuthState>()(
 
       patchUser: (patch) =>
         set((state) =>
-          state.user ? { user: { ...state.user, ...patch } } : state,
-        ),
+          state.user ? { user: { ...state.user, ...patch } } : state
+        )
     }),
     {
       name: 'friendzy-auth',
@@ -56,7 +56,7 @@ export const useAuthStore = create<AuthState>()(
           return {
             getItem: () => null,
             setItem: () => {},
-            removeItem: () => {},
+            removeItem: () => {}
           }
         }
         return sessionStorage
@@ -65,8 +65,8 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,
-        isAuthenticated: state.isAuthenticated,
-      }),
-    },
-  ),
+        isAuthenticated: state.isAuthenticated
+      })
+    }
+  )
 )

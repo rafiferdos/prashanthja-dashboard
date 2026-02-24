@@ -35,10 +35,10 @@ export const useProfileStore = create<ProfileState>()((set) => ({
 
   patchProfile: (patch) =>
     set((state) =>
-      state.profile ? { profile: { ...state.profile, ...patch } } : state,
+      state.profile ? { profile: { ...state.profile, ...patch } } : state
     ),
 
   setLoading: (isLoading) => set({ isLoading }),
 
-  reset: () => set({ profile: null, isLoading: false }),
+  reset: () => set({ profile: null, isLoading: false })
 }))

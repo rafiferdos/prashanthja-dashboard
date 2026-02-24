@@ -166,8 +166,9 @@ export default function SettingsPage() {
 
       if (res.success && res.data) {
         setProfile(res.data)
-        storeSetProfile(res.data)          // sync full profile to store
-        patchUser({                         // keep topbar name / avatar in sync
+        storeSetProfile(res.data) // sync full profile to store
+        patchUser({
+          // keep topbar name / avatar in sync
           name: res.data.name,
           photoUrl: res.data.photoUrl
         })

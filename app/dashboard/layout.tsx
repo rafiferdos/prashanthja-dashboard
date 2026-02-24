@@ -83,7 +83,9 @@ export default function DashboardLayout({
               {/* Name + role — hidden on small screens */}
               <span className='hidden flex-col items-start leading-tight sm:flex'>
                 <span className='text-sm font-semibold'>{displayName}</span>
-                <span className='text-[11px] text-muted-foreground'>{displayRole}</span>
+                <span className='text-[11px] text-muted-foreground'>
+                  {displayRole}
+                </span>
               </span>
               <IconChevronDown
                 className='
@@ -143,4 +145,3 @@ export default function DashboardLayout({
     </SidebarProvider>
   )
 }
-
