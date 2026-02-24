@@ -79,8 +79,8 @@ export function AppSidebar() {
                       isActive={active}
                       className={
                         active ?
-                          'bg-sidebar-primary! text-sidebar-primary-foreground! hover:bg-sidebar-primary/90! hover:text-sidebar-primary-foreground!'
-                        : ''
+                          'bg-linear-to-r from-[#1F889E] to-[#20B482] text-sidebar-primary-foreground! saturate-200 hover:saturate-100 transition-all duration-300'
+                        : 'transition-all duration-300'
                       }
                     >
                       <item.icon />
