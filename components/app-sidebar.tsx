@@ -11,18 +11,27 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import {
-  IconChartBar,
-  IconInbox,
+  IconCalendarEvent,
+  IconFileText,
   IconLayoutDashboard,
   IconSettings,
-  IconUser
+  IconUsers
 } from '@tabler/icons-react'
+import Image from 'next/image'
 
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: IconLayoutDashboard },
-  { title: 'Analytics', url: '/dashboard/analytics', icon: IconChartBar },
-  { title: 'Inbox', url: '/dashboard/inbox', icon: IconInbox },
-  { title: 'Profile', url: '/dashboard/profile', icon: IconUser },
+  { title: 'User Management', url: '/dashboard/users', icon: IconUsers },
+  {
+    title: 'Event Management',
+    url: '/dashboard/events',
+    icon: IconCalendarEvent
+  },
+  {
+    title: 'Content Management',
+    url: '/dashboard/content',
+    icon: IconFileText
+  },
   { title: 'Settings', url: '/dashboard/settings', icon: IconSettings }
 ]
 
@@ -30,8 +39,14 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className='flex items-center gap-2 px-2 py-1'>
-          <span className='text-lg font-semibold'>Dashboard</span>
+        <div className='flex h-75 items-center justify-center'>
+          <Image
+            src='/assets/logo.svg'
+            alt='Logo'
+            width={180}
+            height={180}
+            className='object-contain'
+          />
         </div>
       </SidebarHeader>
       <SidebarContent>
