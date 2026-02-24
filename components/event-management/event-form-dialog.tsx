@@ -1,8 +1,11 @@
 'use client'
 
+import { IconCalendar } from '@tabler/icons-react'
+import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Dialog,
   DialogContent,
@@ -12,7 +15,13 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
 import { Event } from '@/types/dashboard'
 
 // ─── API stubs ───────────────────────────────────────────────────────────────
@@ -31,7 +40,8 @@ type FormState = {
   name: string
   description: string
   location: string
-  dateTime: string
+  date: Date | undefined
+  time: string
   images: string // comma-separated URLs
   hostName: string
   hostEmail: string
@@ -42,7 +52,8 @@ const EMPTY_FORM: FormState = {
   name: '',
   description: '',
   location: '',
-  dateTime: '',
+  date: undefined,
+  time: '',
   images: '',
   hostName: '',
   hostEmail: '',
@@ -50,11 +61,15 @@ const EMPTY_FORM: FormState = {
 }
 
 function eventToForm(e: Event): FormState {
+  const d = new Date(e.dateTime)
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
   return {
     name: e.name,
     description: e.description,
     location: e.location,
-    dateTime: new Date(e.dateTime).toISOString().slice(0, 16), // "YYYY-MM-DDTHH:mm"
+    date: d,
+    time: `${hh}:${mm}`,
     images: e.images.join(', '),
     hostName: e.host.name,
     hostEmail: e.host.email,
@@ -63,11 +78,16 @@ function eventToForm(e: Event): FormState {
 }
 
 function formToEventData(f: FormState): Omit<Event, 'id'> {
+  const combined = new Date(f.date!)
+  if (f.time) {
+    const [hours, minutes] = f.time.split(':').map(Number)
+    combined.setHours(hours, minutes, 0, 0)
+  }
   return {
     name: f.name.trim(),
     description: f.description.trim(),
     location: f.location.trim(),
-    dateTime: new Date(f.dateTime).toISOString(),
+    dateTime: combined.toISOString(),
     images: f.images
       .split(',')
       .map((s) => s.trim())
@@ -97,6 +117,7 @@ export function EventFormDialog({
   const isEdit = !!event
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
   const [isSaving, setIsSaving] = useState(false)
+  const [calOpen, setCalOpen] = useState(false)
 
   // Sync form when target event changes
   useEffect(() => {
@@ -109,8 +130,7 @@ export function EventFormDialog({
   }
 
   async function handleSave() {
-    if (!form.name || !form.dateTime || !form.hostName || !form.hostEmail)
-      return
+    if (!form.name || !form.date || !form.hostName || !form.hostEmail) return
     setIsSaving(true)
     try {
       const data = formToEventData(form)
@@ -157,13 +177,53 @@ export function EventFormDialog({
 
           <div className='grid grid-cols-2 gap-4'>
             <div className='grid gap-2'>
-              <Label htmlFor='ev-dt'>Date & Time *</Label>
-              <Input
-                id='ev-dt'
-                type='datetime-local'
-                value={form.dateTime}
-                onChange={set('dateTime')}
-              />
+              <Label>Date *</Label>
+              <Popover open={calOpen} onOpenChange={setCalOpen}>
+                <PopoverTrigger
+                  render={
+                    <button
+                      type='button'
+                      className={cn(
+                        'flex h-9 w-full items-center gap-2 rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow]',
+                        'hover:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        !form.date && 'text-muted-foreground'
+                      )}
+                    />
+                  }
+                >
+                  <IconCalendar className='size-4 shrink-0' />
+                  <span className='truncate'>
+                    {form.date ? format(form.date, 'PPP') : 'Pick a date'}
+                  </span>
+                </PopoverTrigger>
+                <PopoverContent align='start' className='w-auto p-0'>
+                  <Calendar
+                    mode='single'
+                    selected={form.date}
+                    onSelect={(d) => {
+                      setForm((prev) => ({ ...prev, date: d }))
+                      setCalOpen(false)
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <div className='grid gap-1'>
+                <Label
+                  htmlFor='ev-time'
+                  className='text-xs text-muted-foreground'
+                >
+                  Time
+                </Label>
+                <Input
+                  id='ev-time'
+                  type='time'
+                  value={form.time}
+                  onChange={(e) =>
+                    setForm((prev) => ({ ...prev, time: e.target.value }))
+                  }
+                />
+              </div>
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='ev-loc'>Location</Label>
