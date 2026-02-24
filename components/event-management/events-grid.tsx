@@ -64,7 +64,10 @@ function buildPageNumbers(
   return pages
 }
 
-export function EventsGrid({ initialEvents, isLoading = false }: EventsGridProps) {
+export function EventsGrid({
+  initialEvents,
+  isLoading = false
+}: EventsGridProps) {
   const [events, setEvents] = useState<Event[]>(initialEvents)
   const [page, setPage] = useState(1)
 
@@ -117,7 +120,10 @@ export function EventsGrid({ initialEvents, isLoading = false }: EventsGridProps
           <div className='h-4 w-40 rounded-md bg-muted animate-pulse' />
           <div className='flex gap-1'>
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className='h-9 w-9 rounded-xl bg-muted animate-pulse' />
+              <div
+                key={i}
+                className='h-9 w-9 rounded-xl bg-muted animate-pulse'
+              />
             ))}
           </div>
         </div>
