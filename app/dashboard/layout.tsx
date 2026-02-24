@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  IconChevronDown,
-  IconLogout,
-  IconSettings
-} from '@tabler/icons-react'
+import { IconChevronDown, IconLogout, IconSettings } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 

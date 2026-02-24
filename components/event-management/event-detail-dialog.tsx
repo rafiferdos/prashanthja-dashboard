@@ -177,7 +177,6 @@ export function EventDetailDialog({
               </span>
             </div>
           </div>
-
         </div>
       </DialogContent>
     </Dialog>
