@@ -21,3 +21,21 @@ export interface User {
   lastLogin: string
   avatarUrl?: string
 }
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+export interface EventHost {
+  name: string
+  email: string
+  photo?: string
+}
+
+export interface Event {
+  id: string
+  name: string
+  description: string
+  location: string
+  dateTime: string
+  images: string[]
+  host: EventHost
+}

@@ -1,8 +1,17 @@
-export default function EventManagement() {
+import { EventsGrid } from '@/components/event-management/events-grid'
+import { MOCK_EVENTS } from '@/lib/mock-data'
+
+export default function EventManagementPage() {
   return (
-    <div className='flex flex-col gap-4'>
-      <h1 className='text-2xl font-bold'>Events</h1>
-      <p className='text-muted-foreground'>See events here.</p>
+    <div className='flex flex-col gap-6'>
+      <div>
+        <h1 className='text-3xl font-bold tracking-tight'>Event Management</h1>
+        <p className='text-muted-foreground'>
+          Create, manage, and track all your platform events.
+        </p>
+      </div>
+
+      <EventsGrid initialEvents={MOCK_EVENTS} />
     </div>
   )
 }
