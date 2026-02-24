@@ -8,7 +8,7 @@ import {
 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 
 import { AuthFormPanel } from '@/components/auth/auth-form-panel'
 import { OtpInput } from '@/components/auth/otp-input'
@@ -19,7 +19,7 @@ import type { AuthError } from '@/types/auth'
 const OTP_LENGTH = 6
 const RESEND_COOLDOWN = 30 // seconds
 
-export default function VerifyOtpPage() {
+function VerifyOtpContent() {
   const router = useRouter()
   const params = useSearchParams()
   const email = params.get('email') ?? ''
@@ -211,5 +211,13 @@ export default function VerifyOtpPage() {
         </div>
       </div>
     </AuthFormPanel>
+  )
+}
+
+export default function VerifyOtpPage() {
+  return (
+    <Suspense>
+      <VerifyOtpContent />
+    </Suspense>
   )
 }

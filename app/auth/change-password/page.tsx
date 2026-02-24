@@ -8,7 +8,7 @@ import {
 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { AuthFormPanel } from '@/components/auth/auth-form-panel'
 import { PasswordInput } from '@/components/auth/password-input'
@@ -103,7 +103,7 @@ function StrengthBar({ password }: { password: string }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function ChangePasswordPage() {
+function ChangePasswordContent() {
   const router = useRouter()
   const params = useSearchParams()
   const token = params.get('token') ?? ''
@@ -260,5 +260,13 @@ export default function ChangePasswordPage() {
         </Button>
       </form>
     </AuthFormPanel>
+  )
+}
+
+export default function ChangePasswordPage() {
+  return (
+    <Suspense>
+      <ChangePasswordContent />
+    </Suspense>
   )
 }

@@ -3,7 +3,7 @@
 import { IconAlertCircle, IconLoader2 } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { AuthFormPanel } from '@/components/auth/auth-form-panel'
 import { PasswordInput } from '@/components/auth/password-input'
@@ -14,7 +14,7 @@ import { signIn } from '@/lib/api/auth'
 import { useAuthStore } from '@/store/auth.store'
 import type { AuthError } from '@/types/auth'
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter()
   const params = useSearchParams()
   const setAuth = useAuthStore((s) => s.setAuth)
@@ -170,5 +170,13 @@ export default function SignInPage() {
         </Button>
       </form>
     </AuthFormPanel>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense>
+      <SignInContent />
+    </Suspense>
   )
 }
