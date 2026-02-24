@@ -1,7 +1,19 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
 import { UsersTable } from '@/components/user-management/users-table'
 import { MOCK_USERS } from '@/lib/mock-data'
 
 export default function UserManagementPage() {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // TODO: replace timeout with actual API call
+    const timer = setTimeout(() => setIsLoading(false), 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className='flex flex-col gap-6'>
       <div>
@@ -12,7 +24,7 @@ export default function UserManagementPage() {
         </p>
       </div>
 
-      <UsersTable initialUsers={MOCK_USERS} />
+      <UsersTable initialUsers={MOCK_USERS} isLoading={isLoading} />
     </div>
   )
 }

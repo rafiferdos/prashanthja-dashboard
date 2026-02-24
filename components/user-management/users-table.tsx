@@ -8,7 +8,9 @@ import {
 } from '@tabler/icons-react'
 import { useState } from 'react'
 
+import { TableSkeleton } from '@/components/shared/table-skeleton'
 import { UserStatusBadge } from '@/components/shared/user-status-badge'
+import { UserInfoDialog } from '@/components/dashboard/user-info-dialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -77,13 +79,15 @@ const PAGE_SIZE = 10
 
 interface UsersTableProps {
   initialUsers: User[]
+  isLoading?: boolean
 }
 
-export function UsersTable({ initialUsers }: UsersTableProps) {
+export function UsersTable({ initialUsers, isLoading = false }: UsersTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers)
   const [page, setPage] = useState(1)
 
   // ── dialog state ──
+  const [viewTarget, setViewTarget] = useState<User | null>(null)
   const [editTarget, setEditTarget] = useState<User | null>(null)
   const [editForm, setEditForm] = useState<Pick<
     User,
@@ -144,6 +148,10 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
     return pages
   }
 
+  if (isLoading) {
+    return <TableSkeleton rows={PAGE_SIZE} cols={6} showPagination />
+  }
+
   return (
     <>
       {/* ── Table ─────────────────────────────────────────────────────────── */}
@@ -161,7 +169,11 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
           </TableHeader>
           <TableBody>
             {paginatedUsers.map((user) => (
-              <TableRow key={user.id}>
+              <TableRow
+                key={user.id}
+                className='cursor-pointer'
+                onClick={() => setViewTarget(user)}
+              >
                 <TableCell className='font-medium'>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>
@@ -182,7 +194,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                       variant='ghost'
                       size='icon-sm'
                       aria-label='Edit user'
-                      onClick={() => openEdit(user)}
+                      onClick={(e) => { e.stopPropagation(); openEdit(user) }}
                     >
                       <IconEdit className='h-4 w-4' />
                     </Button>
@@ -196,7 +208,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                           'Unblock user'
                         : 'Block user'
                       }
-                      onClick={() => setBlockTarget(user)}
+                      onClick={(e) => { e.stopPropagation(); setBlockTarget(user) }}
                     >
                       {user.status === 'Blocked' ?
                         <IconLockOpen className='h-4 w-4 text-emerald-500' />
@@ -208,7 +220,7 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
                       variant='ghost'
                       size='icon-sm'
                       aria-label='Delete user'
-                      onClick={() => setDeleteTarget(user)}
+                      onClick={(e) => { e.stopPropagation(); setDeleteTarget(user) }}
                     >
                       <IconTrash className='h-4 w-4 text-destructive' />
                     </Button>
@@ -401,6 +413,13 @@ export function UsersTable({ initialUsers }: UsersTableProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* ── View User Info ─────────────────────────────────────────────────── */}
+      <UserInfoDialog
+        user={viewTarget}
+        open={!!viewTarget}
+        onOpenChange={(open) => !open && setViewTarget(null)}
+      />
     </>
   )
 }

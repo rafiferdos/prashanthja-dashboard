@@ -1,11 +1,53 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { IconCreditCard, IconEye, IconUsers } from '@tabler/icons-react'
 
+import { ChartSkeleton } from '@/components/dashboard/chart-skeleton'
 import { RecentUsersTable } from '@/components/dashboard/recent-users-table'
 import { StatCard } from '@/components/dashboard/stat-card'
+import { StatCardSkeleton } from '@/components/dashboard/stat-card-skeleton'
+import { TableSkeleton } from '@/components/shared/table-skeleton'
 import { ChartAreaStacked } from '@/components/ui/chart-area-stacked'
 import { MOCK_USERS } from '@/lib/mock-data'
 
+const RECENT_USER_COUNT = 5
+
+const statCards = [
+  {
+    title: 'Total Views',
+    value: '2.4M',
+    icon: IconEye,
+    description: 'from last month',
+    trend: { value: 12.5, isPositive: true }
+  },
+  {
+    title: 'Total Users',
+    value: '14,231',
+    icon: IconUsers,
+    description: 'from last month',
+    trend: { value: 4.1, isPositive: true }
+  },
+  {
+    title: 'Total Sales',
+    value: '$45,231.89',
+    icon: IconCreditCard,
+    description: 'from last month',
+    trend: { value: 2.4, isPositive: false }
+  }
+]
+
 export default function DashboardPage() {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // TODO: replace timeout with actual API call
+    const timer = setTimeout(() => setIsLoading(false), 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const recentUsers = MOCK_USERS.slice(0, RECENT_USER_COUNT)
+
   return (
     <div className='flex flex-col gap-6'>
       <div>
@@ -17,33 +59,13 @@ export default function DashboardPage() {
 
       {/* Stats Row */}
       <div className='grid gap-4 md:grid-cols-3'>
-        <StatCard
-          title='Total Views'
-          value='2.4M'
-          icon={IconEye}
-          description='from last month'
-          trend={{ value: 12.5, isPositive: true }}
-        />
-        <StatCard
-          title='Total Users'
-          value='14,231'
-          icon={IconUsers}
-          description='from last month'
-          trend={{ value: 4.1, isPositive: true }}
-        />
-        <StatCard
-          title='Total Sales'
-          value='$45,231.89'
-          icon={IconCreditCard}
-          description='from last month'
-          trend={{ value: 2.4, isPositive: false }}
-        />
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)
+          : statCards.map((card) => <StatCard key={card.title} {...card} />)}
       </div>
 
       {/* Chart Section */}
-      <div className='grid gap-4 md:grid-cols-1'>
-        <ChartAreaStacked />
-      </div>
+      {isLoading ? <ChartSkeleton /> : <ChartAreaStacked />}
 
       {/* Recent Users Table Section */}
       <div className='flex flex-col gap-4'>
@@ -53,7 +75,11 @@ export default function DashboardPage() {
             A list of users who recently joined or logged in.
           </p>
         </div>
-        <RecentUsersTable users={MOCK_USERS} />
+        {isLoading ? (
+          <TableSkeleton rows={RECENT_USER_COUNT} cols={5} />
+        ) : (
+          <RecentUsersTable users={recentUsers} />
+        )}
       </div>
     </div>
   )
