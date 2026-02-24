@@ -1,14 +1,20 @@
+'use client'
+
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  SidebarSeparator
 } from '@/components/ui/sidebar'
 import {
   IconCalendarEvent,
@@ -17,12 +23,14 @@ import {
   IconSettings,
   IconUsers
 } from '@tabler/icons-react'
-import Image from 'next/image'
-import Link from 'next/link'
 
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: IconLayoutDashboard },
-  { title: 'User Management', url: '/dashboard/user-management', icon: IconUsers },
+  {
+    title: 'User Management',
+    url: '/dashboard/user-management',
+    icon: IconUsers
+  },
   {
     title: 'Event Management',
     url: '/dashboard/event-management',
@@ -37,6 +45,11 @@ const navItems = [
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
+
+  const isActive = (url: string) =>
+    url === '/dashboard' ? pathname === url : pathname.startsWith(url)
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -50,25 +63,39 @@ export function AppSidebar() {
           />
         </div>
       </SidebarHeader>
+
+      <SidebarSeparator />
+
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton render={<Link href={item.url} />}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navItems.map((item) => {
+                const active = isActive(item.url)
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      render={<Link href={item.url} />}
+                      isActive={active}
+                      className={
+                        active ?
+                          'bg-sidebar-primary! text-sidebar-primary-foreground! hover:bg-sidebar-primary/90! hover:text-sidebar-primary-foreground!'
+                        : ''
+                      }
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter>
-        <div className='px-2 py-1 text-xs text-muted-foreground'>v1.0.0</div>
+        <div className='px-3 py-2 text-xs text-muted-foreground'>v1.0.0</div>
       </SidebarFooter>
     </Sidebar>
   )
