@@ -607,7 +607,7 @@ function ChatInput({
           disabled={disabled}
           rows={1}
           className='
-            max-h-32 min-h-[36px] flex-1 resize-none border-0 bg-transparent p-0
+            max-h-32 min-h-9 flex-1 resize-none border-0 bg-transparent p-0
             text-sm shadow-none focus-visible:ring-0
           '
         />
