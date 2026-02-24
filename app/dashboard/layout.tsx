@@ -57,7 +57,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className='h-svh overflow-hidden'>
         {/* ── Fixed top bar ─────────────────────────────────────────── */}
         <header className='sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background/80 px-4 backdrop-blur-md'>
           <SidebarTrigger className='-ml-1' />
@@ -140,7 +140,9 @@ export default function DashboardLayout({
           </DropdownMenu>
         </header>
 
-        <main className='flex flex-1 flex-col gap-4 p-4'>{children}</main>
+        <main className='flex flex-1 flex-col gap-4 overflow-auto min-h-0 p-4'>
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )

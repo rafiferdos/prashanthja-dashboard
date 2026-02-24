@@ -870,7 +870,7 @@ export default function CustomerSupportPage() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className='flex h-[calc(100vh-4rem)] flex-col'>
+    <div className='flex flex-1 flex-col min-h-0 overflow-hidden'>
       {/* Page title bar */}
       <div className='flex h-12 shrink-0 items-center justify-between px-1 pb-3'>
         <div>
