@@ -21,15 +21,15 @@ import Image from 'next/image'
 
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: IconLayoutDashboard },
-  { title: 'User Management', url: '/dashboard/users', icon: IconUsers },
+  { title: 'User Management', url: '/dashboard/user-management', icon: IconUsers },
   {
     title: 'Event Management',
-    url: '/dashboard/events',
+    url: '/dashboard/event-management',
     icon: IconCalendarEvent
   },
   {
     title: 'Content Management',
-    url: '/dashboard/content',
+    url: '/dashboard/content-management',
     icon: IconFileText
   },
   { title: 'Settings', url: '/dashboard/settings', icon: IconSettings }
