@@ -1,44 +1,184 @@
-import { User } from '@/types/dashboard'
+import { User, UserRole, UserStatus } from '@/types/dashboard'
 
-export const MOCK_USERS: User[] = [
-  {
-    id: 'usr_01',
-    name: 'Alice Freeman',
-    email: 'alice@example.com',
-    role: 'Admin',
-    status: 'Active',
-    lastLogin: '2026-02-24T10:23:00Z'
-  },
-  {
-    id: 'usr_02',
-    name: 'Bob Smith',
-    email: 'bob.smith@example.com',
-    role: 'User',
-    status: 'Inactive',
-    lastLogin: '2026-02-20T14:15:00Z'
-  },
-  {
-    id: 'usr_03',
-    name: 'Charlie Davis',
-    email: 'charlie.d@example.com',
-    role: 'Editor',
-    status: 'Active',
-    lastLogin: '2026-02-23T09:45:00Z'
-  },
-  {
-    id: 'usr_04',
-    name: 'Diana Prince',
-    email: 'diana.p@example.com',
-    role: 'Manager',
-    status: 'Pending',
-    lastLogin: '2026-02-24T08:10:00Z'
-  },
-  {
-    id: 'usr_05',
-    name: 'Evan Wright',
-    email: 'evan.w@example.com',
-    role: 'User',
-    status: 'Active',
-    lastLogin: '2026-02-22T16:30:00Z'
-  }
+const roles: UserRole[] = ['Admin', 'User', 'Editor', 'Manager']
+const statuses: UserStatus[] = [
+  'Active',
+  'Active',
+  'Active',
+  'Inactive',
+  'Pending',
+  'Blocked'
 ]
+
+const firstNames = [
+  'Alice',
+  'Bob',
+  'Charlie',
+  'Diana',
+  'Evan',
+  'Fiona',
+  'George',
+  'Hannah',
+  'Ivan',
+  'Julia',
+  'Kevin',
+  'Laura',
+  'Mike',
+  'Nina',
+  'Oscar',
+  'Paula',
+  'Quinn',
+  'Rachel',
+  'Steve',
+  'Tina',
+  'Umar',
+  'Vera',
+  'Will',
+  'Xena',
+  'Yusuf',
+  'Zara',
+  'Aaron',
+  'Bella',
+  'Carlos',
+  'Daisy',
+  'Eliot',
+  'Faith',
+  'Gavin',
+  'Heidi',
+  'Ian',
+  'Jasmine',
+  'Kyle',
+  'Luna',
+  'Mason',
+  'Nora',
+  'Owen',
+  'Priya',
+  'Rory',
+  'Sara',
+  'Tom',
+  'Uma',
+  'Victor',
+  'Wendy',
+  'Xander',
+  'Yasmin',
+  'Zack',
+  'Amy',
+  'Brian',
+  'Chloe',
+  'Derek',
+  'Ellie',
+  'Felix',
+  'Grace',
+  'Henry',
+  'Isla',
+  'Jack',
+  'Kira',
+  'Liam',
+  'Mia',
+  'Nathan',
+  'Olive',
+  'Peter',
+  'Quinn',
+  'Rose',
+  'Sam',
+  'Taylor',
+  'Ursula'
+]
+
+const lastNames = [
+  'Freeman',
+  'Smith',
+  'Davis',
+  'Prince',
+  'Wright',
+  'Clarke',
+  'Evans',
+  'Martin',
+  'Thompson',
+  'Garcia',
+  'Martinez',
+  'Robinson',
+  'Clark',
+  'Lewis',
+  'Lee',
+  'Walker',
+  'Hall',
+  'Allen',
+  'Young',
+  'King',
+  'Scott',
+  'Green',
+  'Baker',
+  'Nelson',
+  'Carter',
+  'Mitchell',
+  'Perez',
+  'Roberts',
+  'Turner',
+  'Phillips',
+  'Campbell',
+  'Parker',
+  'Edwards',
+  'Collins',
+  'Stewart',
+  'Morris',
+  'Rogers',
+  'Reed',
+  'Cook',
+  'Morgan',
+  'Bell',
+  'Murphy',
+  'Bailey',
+  'Rivera',
+  'Cooper',
+  'Richardson',
+  'Cox',
+  'Ward',
+  'Torres',
+  'Peterson',
+  'Gray',
+  'Ramirez',
+  'James',
+  'Watson',
+  'Brooks',
+  'Kelly',
+  'Sanders',
+  'Price',
+  'Bennett',
+  'Wood',
+  'Barnes',
+  'Ross',
+  'Henderson',
+  'Coleman',
+  'Jenkins',
+  'Perry',
+  'Powell',
+  'Long',
+  'Patterson',
+  'Hughes',
+  'Flores'
+]
+
+function generateMockUsers(count: number): User[] {
+  return Array.from({ length: count }, (_, i) => {
+    const firstName = firstNames[i % firstNames.length]
+    const lastName = lastNames[i % lastNames.length]
+    const name = `${firstName} ${lastName}`
+    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`
+    const role = roles[i % roles.length]
+    const status = statuses[i % statuses.length]
+    const daysAgo = Math.floor(Math.random() * 30)
+    const lastLogin = new Date(Date.now() - daysAgo * 86_400_000).toISOString()
+
+    return {
+      id: `usr_${String(i + 1).padStart(2, '0')}`,
+      name,
+      email,
+      role,
+      status,
+      lastLogin
+    }
+  })
+}
+
+export const MOCK_USERS: User[] = generateMockUsers(70)

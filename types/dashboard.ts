@@ -10,7 +10,7 @@ export interface StatCardData {
 }
 
 export type UserRole = 'Admin' | 'User' | 'Editor' | 'Manager'
-export type UserStatus = 'Active' | 'Inactive' | 'Pending'
+export type UserStatus = 'Active' | 'Inactive' | 'Pending' | 'Blocked'
 
 export interface User {
   id: string

@@ -1,8 +1,18 @@
-export default function UserManagement() {
+import { UsersTable } from '@/components/user-management/users-table'
+import { MOCK_USERS } from '@/lib/mock-data'
+
+export default function UserManagementPage() {
   return (
-    <div className='flex flex-col gap-4'>
-      <h1 className='text-2xl font-bold'>Users</h1>
-      <p className='text-muted-foreground'>See users here.</p>
+    <div className='flex flex-col gap-6'>
+      <div>
+        <h1 className='text-3xl font-bold tracking-tight'>User Management</h1>
+        <p className='text-muted-foreground'>
+          Manage all registered users — edit details, block access, or remove
+          accounts.
+        </p>
+      </div>
+
+      <UsersTable initialUsers={MOCK_USERS} />
     </div>
   )
 }
