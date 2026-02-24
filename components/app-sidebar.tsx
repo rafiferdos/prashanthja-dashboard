@@ -18,6 +18,7 @@ import {
   IconUsers
 } from '@tabler/icons-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: IconLayoutDashboard },
@@ -56,7 +57,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton render={<a href={item.url} />}>
+                  <SidebarMenuButton render={<Link href={item.url} />}>
                     <item.icon />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
