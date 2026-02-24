@@ -25,9 +25,9 @@ import type {
 const MOCK_PROFILE: ProfileSettings = {
   id: 'usr_admin_001',
   name: 'Prashanth JA',
-  email: 'prashanthja@sparktech.com',
+  email: 'admin@example.com',
   about:
-    'Product manager and admin at SparkTech. Passionate about building great user experiences and data-driven products.',
+    'Product manager and admin. Passionate about building great user experiences and data-driven products.',
   photoUrl: null,
   role: 'Admin',
   createdAt: '2024-01-15T09:00:00Z'

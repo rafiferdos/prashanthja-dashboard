@@ -101,7 +101,7 @@ const PRIVACY_DEFAULT = [
     type: 'p',
     children: [
       { text: 'If you have questions about this policy, contact us at ' },
-      { text: 'privacy@sparktech.dev', bold: true },
+      { text: 'privacy@example.com', bold: true },
       { text: '.' }
     ]
   }

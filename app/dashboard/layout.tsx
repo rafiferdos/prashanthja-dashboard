@@ -77,9 +77,9 @@ export default function DashboardLayout({
                   PJ
                 </span>
                 <div className='flex flex-col leading-tight'>
-                  <span className='text-sm font-semibold'>Prashanth Ja</span>
+                  <span className='text-sm font-semibold'>Prashanth JA</span>
                   <span className='text-xs text-muted-foreground'>
-                    prashanth@sparktech.dev
+                    admin@example.com
                   </span>
                 </div>
               </div>
@@ -100,7 +100,7 @@ export default function DashboardLayout({
               <DropdownMenuItem
                 variant='destructive'
                 className='gap-3'
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/auth/sign-in')}
               >
                 <IconLogout className='size-4' />
                 <span>Log out</span>
