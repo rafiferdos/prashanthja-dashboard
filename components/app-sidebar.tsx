@@ -19,6 +19,7 @@ import {
 import {
   IconCalendarEvent,
   IconFileText,
+  IconHeadset,
   IconLayoutDashboard,
   IconSettings,
   IconUsers
@@ -40,6 +41,11 @@ const navItems = [
     title: 'Content Management',
     url: '/dashboard/content-management',
     icon: IconFileText
+  },
+  {
+    title: 'Customer Support',
+    url: '/dashboard/customer-support',
+    icon: IconHeadset
   },
   { title: 'Settings', url: '/dashboard/settings', icon: IconSettings }
 ]
