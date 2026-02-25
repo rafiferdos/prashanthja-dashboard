@@ -254,7 +254,6 @@ export default function SettingsPage() {
 
   return (
     <div className='flex w-full flex-col rounded-2xl border bg-card shadow-sm'>
-
       {/* ── Banner + avatar ──────────────────────────────────────────────── */}
       {/* Wrapper is relative so avatar can hang below banner via translate-y-1/2 */}
       <div className='relative'>
@@ -313,14 +312,18 @@ export default function SettingsPage() {
               {profile?.role ?? 'Admin'}
             </span>
             <span className='text-xs text-muted-foreground'>
-              Member since {memberSince}
+              Active since {memberSince}
             </span>
           </div>
         </div>
         {/* Page label */}
         <div className='flex flex-col items-end gap-0.5'>
-          <h1 className='text-base font-bold tracking-tight'>Profile Settings</h1>
-          <p className='text-xs text-muted-foreground'>Manage your public profile and account</p>
+          <h1 className='text-base font-bold tracking-tight'>
+            Profile Settings
+          </h1>
+          <p className='text-xs text-muted-foreground'>
+            Manage your public profile and account
+          </p>
         </div>
       </div>
 
@@ -426,20 +429,21 @@ export default function SettingsPage() {
           </div>
 
           {/* Save bar */}
-          {(isDirty || saveStatus !== 'idle') && (
-            <div className='flex items-center justify-between gap-3 rounded-xl border bg-muted/40 px-4 py-3'>
+          <div className='flex items-center justify-between gap-3 rounded-xl border bg-muted/40 px-4 py-3'>
               <span
                 className={`text-sm ${
                   saveStatus === 'saved' ?
                     'flex items-center gap-1.5 text-emerald-600'
                   : saveStatus === 'error' ? 'text-destructive'
-                  : 'text-muted-foreground'
+                  : isDirty ? 'text-muted-foreground'
+                  : 'text-muted-foreground/40'
                 }`}
               >
                 {saveStatus === 'saved' && <IconCheck size={14} />}
                 {saveStatus === 'saved' && 'Changes saved successfully'}
                 {saveStatus === 'error' && 'Something went wrong. Try again.'}
                 {saveStatus === 'idle' && isDirty && 'You have unsaved changes'}
+                {saveStatus === 'idle' && !isDirty && 'All changes saved'}
               </span>
               <div className='flex gap-2'>
                 <Button
@@ -465,8 +469,7 @@ export default function SettingsPage() {
                   : 'Save Changes'}
                 </Button>
               </div>
-            </div>
-          )}
+          </div>
         </div>
       </Section>
 
@@ -497,10 +500,10 @@ export default function SettingsPage() {
               {profile?.role ?? '—'}
             </span>
           </div>
-          {/* Member since */}
+          {/* Active since */}
           <div className='flex flex-col gap-1 rounded-xl border bg-muted/30 px-4 py-3'>
             <span className='flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
-              <IconShield size={11} /> Member Since
+              <IconShield size={11} /> Active Since
             </span>
             <span className='text-sm font-medium'>{memberSince}</span>
           </div>
