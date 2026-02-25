@@ -178,7 +178,10 @@ export default function SettingsPage() {
     setPhotoPreview(null)
     setPendingPhotoFile(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
-    sileo.warning({ title: 'Photo removed', description: 'Save changes to apply this update.' })
+    sileo.warning({
+      title: 'Photo removed',
+      description: 'Save changes to apply this update.'
+    })
   }, [])
 
   // ── Save ────────────────────────────────────────────────────────────────────
@@ -211,9 +214,18 @@ export default function SettingsPage() {
 
     try {
       const data = await sileo.promise(doSave, {
-        loading: { title: 'Saving profile…', description: 'Uploading your changes, please wait.' },
-        success: (d) => ({ title: 'Profile updated!', description: `Changes saved for ${d.name}.` }),
-        error: { title: 'Save failed', description: 'Something went wrong. Please try again.' }
+        loading: {
+          title: 'Saving profile…',
+          description: 'Uploading your changes, please wait.'
+        },
+        success: (d) => ({
+          title: 'Profile updated!',
+          description: `Changes saved for ${d.name}.`
+        }),
+        error: {
+          title: 'Save failed',
+          description: 'Something went wrong. Please try again.'
+        }
       })
       setProfile(data)
       storeSetProfile(data)
@@ -238,7 +250,10 @@ export default function SettingsPage() {
     setPhotoPreview(profile.photoUrl)
     setPendingPhotoFile(null)
     setSaveStatus('idle')
-    sileo.info({ title: 'Changes discarded', description: 'Your edits have been reset to the last saved state.' })
+    sileo.info({
+      title: 'Changes discarded',
+      description: 'Your edits have been reset to the last saved state.'
+    })
   }, [profile])
 
   // ── Dirty check ─────────────────────────────────────────────────────────────

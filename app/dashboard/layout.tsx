@@ -145,7 +145,7 @@ export default function DashboardLayout({
           {children}
         </main>
       </SidebarInset>
-      <Toaster position='bottom-right' theme='light' />
+      <Toaster position='bottom-center' theme='dark' />
     </SidebarProvider>
   )
 }

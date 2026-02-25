@@ -93,21 +93,27 @@ export function EventsGrid({
     setEditTarget(null)
     sileo.success({
       title: isNew ? 'Event created!' : 'Event updated',
-      description: isNew ? `"${saved.name}" has been added.` : `"${saved.name}" has been saved.`
+      description:
+        isNew ?
+          `"${saved.name}" has been added.`
+        : `"${saved.name}" has been saved.`
     })
   }
 
   async function handleDelete() {
     if (!deleteTarget) return
     const name = deleteTarget.name
-    await sileo.promise(
-      apiDeleteEvent(deleteTarget.id),
-      {
-        loading: { title: 'Deleting event…', description: `Removing "${name}".` },
-        success: { title: 'Event deleted', description: `"${name}" has been permanently removed.` },
-        error: { title: 'Delete failed', description: 'Something went wrong. Please try again.' }
+    await sileo.promise(apiDeleteEvent(deleteTarget.id), {
+      loading: { title: 'Deleting event…', description: `Removing "${name}".` },
+      success: {
+        title: 'Event deleted',
+        description: `"${name}" has been permanently removed.`
+      },
+      error: {
+        title: 'Delete failed',
+        description: 'Something went wrong. Please try again.'
       }
-    )
+    })
     setEvents((prev) => prev.filter((e) => e.id !== deleteTarget.id))
     setDeleteTarget(null)
     if (paginatedEvents.length === 1 && page > 1) setPage((p) => p - 1)

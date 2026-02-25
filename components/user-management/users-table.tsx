@@ -115,9 +115,18 @@ export function UsersTable({
     const updated = await sileo.promise(
       apiUpdateUser({ ...editTarget, ...editForm }),
       {
-        loading: { title: 'Saving changes…', description: `Updating ${editForm.name}'s profile.` },
-        success: (u) => ({ title: 'User updated', description: `${u.name}'s info has been saved.` }),
-        error: { title: 'Update failed', description: 'Something went wrong. Please try again.' }
+        loading: {
+          title: 'Saving changes…',
+          description: `Updating ${editForm.name}'s profile.`
+        },
+        success: (u) => ({
+          title: 'User updated',
+          description: `${u.name}'s info has been saved.`
+        }),
+        error: {
+          title: 'Update failed',
+          description: 'Something went wrong. Please try again.'
+        }
       }
     )
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)))
@@ -128,14 +137,20 @@ export function UsersTable({
   async function handleDelete() {
     if (!deleteTarget) return
     const name = deleteTarget.name
-    await sileo.promise(
-      apiDeleteUser(deleteTarget.id),
-      {
-        loading: { title: 'Deleting user…', description: `Removing ${name} from the system.` },
-        success: { title: 'User deleted', description: `${name} has been permanently removed.` },
-        error: { title: 'Delete failed', description: 'Something went wrong. Please try again.' }
+    await sileo.promise(apiDeleteUser(deleteTarget.id), {
+      loading: {
+        title: 'Deleting user…',
+        description: `Removing ${name} from the system.`
+      },
+      success: {
+        title: 'User deleted',
+        description: `${name} has been permanently removed.`
+      },
+      error: {
+        title: 'Delete failed',
+        description: 'Something went wrong. Please try again.'
       }
-    )
+    })
     setUsers((prev) => prev.filter((u) => u.id !== deleteTarget.id))
     setDeleteTarget(null)
     if (paginatedUsers.length === 1 && page > 1) setPage((p) => p - 1)
@@ -144,14 +159,20 @@ export function UsersTable({
   async function handleToggleBlock() {
     if (!blockTarget) return
     const isBlocking = blockTarget.status !== 'Blocked'
-    const updated = await sileo.promise(
-      apiToggleBlock(blockTarget),
-      {
-        loading: { title: `${isBlocking ? 'Blocking' : 'Unblocking'} user…`, description: `Updating ${blockTarget.name}'s access.` },
-        success: (u) => ({ title: isBlocking ? 'User blocked' : 'User unblocked', description: `${u.name}'s access has been ${isBlocking ? 'revoked' : 'restored'}.` }),
-        error: { title: 'Action failed', description: 'Something went wrong. Please try again.' }
+    const updated = await sileo.promise(apiToggleBlock(blockTarget), {
+      loading: {
+        title: `${isBlocking ? 'Blocking' : 'Unblocking'} user…`,
+        description: `Updating ${blockTarget.name}'s access.`
+      },
+      success: (u) => ({
+        title: isBlocking ? 'User blocked' : 'User unblocked',
+        description: `${u.name}'s access has been ${isBlocking ? 'revoked' : 'restored'}.`
+      }),
+      error: {
+        title: 'Action failed',
+        description: 'Something went wrong. Please try again.'
       }
-    )
+    })
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)))
     setBlockTarget(null)
   }

@@ -186,14 +186,20 @@ function EditorTab({
   async function handleSave() {
     setIsSaving(true)
     try {
-      await sileo.promise(
-        new Promise<void>((r) => setTimeout(r, 800)),
-        {
-          loading: { title: 'Saving document…', description: 'Publishing your latest changes.' },
-          success: { title: 'Document saved!', description: 'Your changes have been published.' },
-          error: { title: 'Save failed', description: 'Something went wrong. Please try again.' }
+      await sileo.promise(new Promise<void>((r) => setTimeout(r, 800)), {
+        loading: {
+          title: 'Saving document…',
+          description: 'Publishing your latest changes.'
+        },
+        success: {
+          title: 'Document saved!',
+          description: 'Your changes have been published.'
+        },
+        error: {
+          title: 'Save failed',
+          description: 'Something went wrong. Please try again.'
         }
-      )
+      })
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
     } finally {
