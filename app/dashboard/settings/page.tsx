@@ -430,45 +430,45 @@ export default function SettingsPage() {
 
           {/* Save bar */}
           <div className='flex items-center justify-between gap-3 rounded-xl border bg-muted/40 px-4 py-3'>
-              <span
-                className={`text-sm ${
-                  saveStatus === 'saved' ?
-                    'flex items-center gap-1.5 text-emerald-600'
-                  : saveStatus === 'error' ? 'text-destructive'
-                  : isDirty ? 'text-muted-foreground'
-                  : 'text-muted-foreground/40'
-                }`}
+            <span
+              className={`text-sm ${
+                saveStatus === 'saved' ?
+                  'flex items-center gap-1.5 text-emerald-600'
+                : saveStatus === 'error' ? 'text-destructive'
+                : isDirty ? 'text-muted-foreground'
+                : 'text-muted-foreground/40'
+              }`}
+            >
+              {saveStatus === 'saved' && <IconCheck size={14} />}
+              {saveStatus === 'saved' && 'Changes saved successfully'}
+              {saveStatus === 'error' && 'Something went wrong. Try again.'}
+              {saveStatus === 'idle' && isDirty && 'You have unsaved changes'}
+              {saveStatus === 'idle' && !isDirty && 'All changes saved'}
+            </span>
+            <div className='flex gap-2'>
+              <Button
+                variant='outline'
+                size='sm'
+                className='rounded-full'
+                disabled={!isDirty || isSaving}
+                onClick={handleDiscard}
               >
-                {saveStatus === 'saved' && <IconCheck size={14} />}
-                {saveStatus === 'saved' && 'Changes saved successfully'}
-                {saveStatus === 'error' && 'Something went wrong. Try again.'}
-                {saveStatus === 'idle' && isDirty && 'You have unsaved changes'}
-                {saveStatus === 'idle' && !isDirty && 'All changes saved'}
-              </span>
-              <div className='flex gap-2'>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='rounded-full'
-                  disabled={!isDirty || isSaving}
-                  onClick={handleDiscard}
-                >
-                  Discard
-                </Button>
-                <Button
-                  size='sm'
-                  className='rounded-full bg-linear-to-r from-[#1F889E] to-[#20B482] text-white hover:opacity-90'
-                  disabled={!isDirty || isSaving}
-                  onClick={handleSave}
-                >
-                  {isSaving ?
-                    <>
-                      <IconLoader2 size={13} className='mr-1.5 animate-spin' />
-                      {isUploadingPhoto ? 'Uploading…' : 'Saving…'}
-                    </>
-                  : 'Save Changes'}
-                </Button>
-              </div>
+                Discard
+              </Button>
+              <Button
+                size='sm'
+                className='rounded-full bg-linear-to-r from-[#1F889E] to-[#20B482] text-white hover:opacity-90'
+                disabled={!isDirty || isSaving}
+                onClick={handleSave}
+              >
+                {isSaving ?
+                  <>
+                    <IconLoader2 size={13} className='mr-1.5 animate-spin' />
+                    {isUploadingPhoto ? 'Uploading…' : 'Saving…'}
+                  </>
+                : 'Save Changes'}
+              </Button>
+            </div>
           </div>
         </div>
       </Section>
