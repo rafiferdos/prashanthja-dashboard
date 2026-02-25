@@ -39,7 +39,7 @@ function SettingsSkeleton() {
       <div className='relative'>
         <Skeleton className='h-32 w-full rounded-t-2xl' />
         <div className='absolute bottom-0 left-6 translate-y-1/2'>
-          <Skeleton className='size-[96px] rounded-full ring-4 ring-card' />
+          <Skeleton className='size-24 rounded-full ring-4 ring-card' />
         </div>
       </div>
       {/* header */}
@@ -285,14 +285,14 @@ export default function SettingsPage() {
         {/* Banner — self-contained gradient with decorative circles */}
         <div className='h-36 overflow-hidden rounded-t-2xl bg-linear-to-r from-[#0a3444] via-[#1F889E] to-[#20B482] relative'>
           <div className='absolute -right-16 -top-16 size-80 rounded-full bg-white/[0.07]' />
-          <div className='absolute -bottom-14 right-52 size-56 rounded-full bg-white/[0.04]' />
-          <div className='absolute -left-10 -bottom-10 size-52 rounded-full bg-white/[0.06]' />
-          <div className='absolute left-[38%] -top-8 size-36 rounded-full bg-white/[0.04]' />
+          <div className='absolute -bottom-14 right-52 size-56 rounded-full bg-white/4' />
+          <div className='absolute -left-10 -bottom-10 size-52 rounded-full bg-white/6' />
+          <div className='absolute left-[38%] -top-8 size-36 rounded-full bg-white/4' />
         </div>
 
         {/* Avatar — absolutely placed on the bottom edge, half in banner half below */}
         <div className='absolute bottom-0 left-6 translate-y-1/2 z-10'>
-          <div className='size-[96px] overflow-hidden rounded-full shadow-2xl ring-4 ring-card'>
+          <div className='size-24 overflow-hidden rounded-full shadow-2xl ring-4 ring-card'>
             {displayPhoto ?
               <Image
                 src={displayPhoto}
