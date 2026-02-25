@@ -1,6 +1,16 @@
 'use client'
 
-import { IconCamera, IconLoader2, IconUser } from '@tabler/icons-react'
+import {
+  IconAlertTriangle,
+  IconCamera,
+  IconCheck,
+  IconId,
+  IconLoader2,
+  IconLock,
+  IconMail,
+  IconShield,
+  IconUser
+} from '@tabler/icons-react'
 import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -23,32 +33,32 @@ import type { ProfileSettings } from '@/types/api'
 
 function SettingsSkeleton() {
   return (
-    <div className='mx-auto flex w-full max-w-4xl flex-col gap-6'>
-      <div>
-        <Skeleton className='h-8 w-48 rounded-lg' />
-        <Skeleton className='mt-2 h-4 w-72 rounded-lg' />
-      </div>
-      <div className='grid gap-6 lg:grid-cols-[280px_1fr]'>
-        {/* photo card skeleton */}
-        <div className='rounded-2xl border bg-card p-6'>
-          <Skeleton className='mx-auto size-32 rounded-full' />
-          <Skeleton className='mx-auto mt-4 h-9 w-36 rounded-full' />
-          <Skeleton className='mx-auto mt-2 h-4 w-48 rounded-lg' />
+    <div className='flex w-full flex-col gap-0'>
+      {/* hero */}
+      <Skeleton className='h-40 w-full rounded-2xl' />
+      {/* identity strip */}
+      <div className='flex items-end gap-4 px-6 -mt-10 pb-4'>
+        <Skeleton className='size-24 rounded-full ring-4 ring-background' />
+        <div className='mb-1 flex flex-col gap-2'>
+          <Skeleton className='h-5 w-40 rounded-lg' />
+          <Skeleton className='h-4 w-28 rounded-full' />
         </div>
-        {/* info card skeleton */}
-        <div className='flex flex-col gap-5 rounded-2xl border bg-card p-6'>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className='flex flex-col gap-1.5'>
-              <Skeleton className='h-4 w-16 rounded-lg' />
-              <Skeleton className='h-9 w-full rounded-full' />
-            </div>
-          ))}
-          <div className='flex flex-col gap-1.5'>
-            <Skeleton className='h-4 w-16 rounded-lg' />
-            <Skeleton className='h-28 w-full rounded-xl' />
+      </div>
+      <Separator />
+      {/* sections */}
+      {[1, 2, 3].map((i) => (
+        <div key={i} className='grid gap-8 px-6 py-8 xl:grid-cols-[280px_1fr]'>
+          <div className='flex flex-col gap-2'>
+            <Skeleton className='size-8 rounded-lg' />
+            <Skeleton className='mt-2 h-5 w-32 rounded-lg' />
+            <Skeleton className='h-4 w-48 rounded-lg' />
+          </div>
+          <div className='flex flex-col gap-4'>
+            <Skeleton className='h-9 w-full rounded-full' />
+            <Skeleton className='h-9 w-full rounded-full' />
           </div>
         </div>
-      </div>
+      ))}
     </div>
   )
 }
@@ -62,6 +72,34 @@ function getInitials(name: string) {
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join('')
+}
+
+// ─── Section ──────────────────────────────────────────────────────────────────
+
+interface SectionProps {
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  title: string
+  description: string
+  children: React.ReactNode
+}
+
+function Section({ icon: Icon, title, description, children }: SectionProps) {
+  return (
+    <div className='grid gap-8 px-6 py-8 xl:grid-cols-[280px_1fr]'>
+      {/* Left: label column */}
+      <div className='flex flex-col gap-2'>
+        <div className='flex size-9 items-center justify-center rounded-xl bg-primary/10'>
+          <Icon size={16} className='text-primary' />
+        </div>
+        <h2 className='mt-1 text-sm font-semibold leading-snug'>{title}</h2>
+        <p className='text-xs text-muted-foreground leading-relaxed'>
+          {description}
+        </p>
+      </div>
+      {/* Right: content */}
+      <div>{children}</div>
+    </div>
+  )
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -92,7 +130,6 @@ export default function SettingsPage() {
 
   // ── Load profile ────────────────────────────────────────────────────────────
   useEffect(() => {
-    // If we already have a cached profile in the store, use it immediately
     if (storeProfile) {
       setProfile(storeProfile)
       setName(storeProfile.name)
@@ -102,11 +139,10 @@ export default function SettingsPage() {
       setIsLoading(false)
       return
     }
-
     getProfile()
       .then((data) => {
         setProfile(data)
-        storeSetProfile(data) // cache in store
+        storeSetProfile(data)
         setName(data.name)
         setEmail(data.email)
         setAbout(data.about)
@@ -140,11 +176,8 @@ export default function SettingsPage() {
     if (!profile) return
     setIsSaving(true)
     setSaveStatus('idle')
-
     try {
       let resolvedPhotoUrl = profile.photoUrl
-
-      // Upload new photo first if one was picked
       if (pendingPhotoFile) {
         setIsUploadingPhoto(true)
         const uploadRes = await uploadProfilePhoto(pendingPhotoFile)
@@ -153,25 +186,18 @@ export default function SettingsPage() {
           resolvedPhotoUrl = uploadRes.data.url
         }
       } else if (photoPreview === null) {
-        // User explicitly removed photo
         resolvedPhotoUrl = null
       }
-
       const res = await updateProfile({
         name: name.trim(),
         email: email.trim(),
         about: about.trim(),
         photoUrl: resolvedPhotoUrl
       })
-
       if (res.success && res.data) {
         setProfile(res.data)
-        storeSetProfile(res.data) // sync full profile to store
-        patchUser({
-          // keep topbar name / avatar in sync
-          name: res.data.name,
-          photoUrl: res.data.photoUrl
-        })
+        storeSetProfile(res.data)
+        patchUser({ name: res.data.name, photoUrl: res.data.photoUrl })
         setPhotoPreview(res.data.photoUrl)
         setPendingPhotoFile(null)
         setSaveStatus('saved')
@@ -187,6 +213,16 @@ export default function SettingsPage() {
     }
   }, [profile, name, email, about, photoPreview, pendingPhotoFile])
 
+  const handleDiscard = useCallback(() => {
+    if (!profile) return
+    setName(profile.name)
+    setEmail(profile.email)
+    setAbout(profile.about)
+    setPhotoPreview(profile.photoUrl)
+    setPendingPhotoFile(null)
+    setSaveStatus('idle')
+  }, [profile])
+
   // ── Dirty check ─────────────────────────────────────────────────────────────
   const isDirty =
     !!profile &&
@@ -196,72 +232,68 @@ export default function SettingsPage() {
       pendingPhotoFile !== null ||
       (photoPreview === null && profile.photoUrl !== null))
 
-  // ────────────────────────────────────────────────────────────────────────────
-
   if (isLoading) return <SettingsSkeleton />
 
   const displayPhoto = photoPreview
   const initials = getInitials(name || 'User')
+  const memberSince =
+    profile?.createdAt ?
+      new Date(profile.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long'
+      })
+    : '—'
 
   return (
-    <div className='mx-auto flex w-full max-w-4xl flex-col gap-6'>
-      {/* ── Page header ───────────────────────────────────────────────────── */}
-      <div>
-        <h1 className='text-2xl font-bold tracking-tight'>Profile Settings</h1>
-        <p className='mt-1 text-sm text-muted-foreground'>
-          Manage your public profile and account details.
-        </p>
+    <div className='flex w-full flex-col rounded-2xl border bg-card shadow-sm overflow-hidden'>
+      {/* ── Hero banner ─────────────────────────────────────────────────── */}
+      <div className='relative h-44 overflow-hidden bg-linear-to-r from-[#0a3444] via-[#1F889E] to-[#20B482]'>
+        {/* Decorative circles */}
+        <div className='absolute -right-12 -top-12 size-72 rounded-full bg-white/[0.06]' />
+        <div className='absolute -bottom-16 right-40 size-56 rounded-full bg-white/[0.04]' />
+        <div className='absolute -left-10 -bottom-10 size-48 rounded-full bg-white/[0.06]' />
+        <div className='absolute left-1/3 -top-8 size-36 rounded-full bg-white/[0.04]' />
+        {/* Top-left label */}
+        <div className='absolute left-6 top-5 flex items-center gap-2'>
+          <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm'>
+            Account Settings
+          </span>
+        </div>
+        {/* Bottom-left title */}
+        <div className='absolute bottom-16 left-6'>
+          <h1 className='text-2xl font-bold tracking-tight text-white'>Profile Settings</h1>
+          <p className='mt-0.5 text-xs text-white/60'>Manage your public profile and account details</p>
+        </div>
       </div>
 
-      <div className='grid gap-6 lg:grid-cols-[280px_1fr]'>
-        {/* ── Photo card ────────────────────────────────────────────────── */}
-        <div className='flex flex-col items-center gap-4 rounded-2xl border bg-card p-6 shadow-sm'>
-          <p className='self-start text-sm font-semibold'>Profile Photo</p>
-
-          {/* Avatar */}
-          <div className='relative'>
-            <div
-              className='
-                size-32 overflow-hidden rounded-full ring-4
-                ring-background shadow-md
-              '
-            >
+      {/* ── Identity strip ──────────────────────────────────────────────── */}
+      <div className='px-6 pb-5'>
+        <div className='flex flex-wrap items-end gap-5 -mt-14'>
+          {/* Avatar overlapping the banner */}
+          <div className='relative shrink-0'>
+            <div className='size-[104px] overflow-hidden rounded-full shadow-xl ring-4 ring-card'>
               {displayPhoto ?
                 <Image
                   src={displayPhoto}
                   alt={name}
-                  width={128}
-                  height={128}
+                  width={104}
+                  height={104}
                   className='h-full w-full object-cover'
                   unoptimized
                 />
-              : <div
-                  className='
-                    flex h-full w-full items-center justify-center
-                    bg-linear-to-br from-[#1F889E] to-[#20B482]
-                    text-2xl font-bold text-white
-                  '
-                >
+              : <div className='flex h-full w-full items-center justify-center bg-linear-to-br from-[#1F889E] to-[#20B482] text-3xl font-bold tracking-tight text-white'>
                   {initials}
                 </div>
               }
             </div>
-
-            {/* Camera badge */}
             <button
               type='button'
               onClick={() => fileInputRef.current?.click()}
-              className='
-                absolute bottom-0 right-0 flex size-9 cursor-pointer items-center justify-center
-                rounded-full border-2 border-background
-                bg-linear-to-br from-[#1F889E] to-[#20B482] text-white shadow-md
-                transition-opacity hover:opacity-90
-              '
+              className='absolute bottom-0.5 right-0.5 flex size-8 cursor-pointer items-center justify-center rounded-full border-[3px] border-card bg-linear-to-br from-[#1F889E] to-[#20B482] text-white shadow-md transition-opacity hover:opacity-85'
               aria-label='Upload photo'
             >
-              <IconCamera size={16} />
+              <IconCamera size={14} />
             </button>
-
             <input
               ref={fileInputRef}
               type='file'
@@ -271,91 +303,100 @@ export default function SettingsPage() {
             />
           </div>
 
-          {/* Buttons */}
-          <div className='flex w-full flex-col gap-2'>
-            <Button
-              variant='outline'
-              size='sm'
-              className='w-full rounded-full'
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploadingPhoto}
-            >
-              <IconUser size={14} className='mr-1.5' />
-              {isUploadingPhoto ? 'Uploading…' : 'Upload new photo'}
-            </Button>
-
-            {displayPhoto && (
-              <Button
-                variant='ghost'
-                size='sm'
-                className='w-full rounded-full text-destructive hover:text-destructive'
-                onClick={handleRemovePhoto}
-                disabled={isSaving}
-              >
-                Remove photo
-              </Button>
-            )}
-          </div>
-
-          <p className='text-center text-xs text-muted-foreground'>
-            PNG, JPG or WebP. Max 5 MB.
-          </p>
-
-          <Separator className='w-full' />
-
-          {/* Read-only account info */}
-          <div className='w-full space-y-2 text-sm'>
-            <div className='flex items-center justify-between'>
-              <span className='text-muted-foreground'>Role</span>
-              <span className='rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary'>
-                {profile?.role}
+          {/* Name + chips */}
+          <div className='flex flex-col gap-1.5 pb-1'>
+            <span className='text-xl font-bold leading-none tracking-tight'>
+              {name || 'Your Name'}
+            </span>
+            <div className='flex flex-wrap items-center gap-2'>
+              <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary'>
+                {profile?.role ?? 'Admin'}
               </span>
-            </div>
-            <div className='flex items-center justify-between'>
-              <span className='text-muted-foreground'>Member since</span>
-              <span className='font-medium'>
-                {profile?.createdAt ?
-                  new Date(profile.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short'
-                  })
-                : '—'}
+              <span className='text-xs text-muted-foreground'>
+                Member since {memberSince}
               </span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* ── Info card ─────────────────────────────────────────────────── */}
-        <div className='flex flex-col gap-5 rounded-2xl border bg-card p-6 shadow-sm'>
-          <p className='text-sm font-semibold'>Profile Information</p>
+      <Separator />
 
-          {/* Name */}
-          <div className='flex flex-col gap-1.5'>
-            <Label htmlFor='name'>Full Name</Label>
-            <Input
-              id='name'
-              placeholder='Your full name'
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value)
-                setSaveStatus('idle')
-              }}
-            />
-          </div>
+      {/* ── Photo section ───────────────────────────────────────────────── */}
+      <Section
+        icon={IconCamera}
+        title='Profile Photo'
+        description='Upload a clear photo so your teammates and customers can recognise you.'
+      >
+        <div className='flex flex-wrap items-center gap-3'>
+          <Button
+            variant='outline'
+            size='sm'
+            className='rounded-full'
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploadingPhoto}
+          >
+            <IconCamera size={14} className='mr-1.5' />
+            {isUploadingPhoto ? 'Uploading…' : 'Upload new photo'}
+          </Button>
+          {displayPhoto && (
+            <Button
+              variant='ghost'
+              size='sm'
+              className='rounded-full text-destructive hover:text-destructive'
+              onClick={handleRemovePhoto}
+              disabled={isSaving}
+            >
+              Remove photo
+            </Button>
+          )}
+          <span className='text-xs text-muted-foreground'>
+            PNG, JPG or WebP · Max 5 MB
+          </span>
+        </div>
+      </Section>
 
-          {/* Email */}
-          <div className='flex flex-col gap-1.5'>
-            <Label htmlFor='email'>Email Address</Label>
-            <Input
-              id='email'
-              type='email'
-              placeholder='you@example.com'
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value)
-                setSaveStatus('idle')
-              }}
-            />
+      <Separator />
+
+      {/* ── Personal information ────────────────────────────────────────── */}
+      <Section
+        icon={IconUser}
+        title='Personal Information'
+        description='Update your display name, email address and short bio.'
+      >
+        <div className='flex flex-col gap-5'>
+          {/* Name + Email 2-col */}
+          <div className='grid gap-4 sm:grid-cols-2'>
+            <div className='flex flex-col gap-1.5'>
+              <Label htmlFor='name'>Full Name</Label>
+              <Input
+                id='name'
+                placeholder='Your full name'
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setSaveStatus('idle')
+                }}
+              />
+            </div>
+            <div className='flex flex-col gap-1.5'>
+              <Label htmlFor='email'>
+                <span className='flex items-center gap-1.5'>
+                  <IconMail size={13} className='text-muted-foreground' />
+                  Email Address
+                </span>
+              </Label>
+              <Input
+                id='email'
+                type='email'
+                placeholder='you@example.com'
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setSaveStatus('idle')
+                }}
+              />
+            </div>
           </div>
 
           {/* About */}
@@ -365,69 +406,133 @@ export default function SettingsPage() {
               id='about'
               placeholder='Write a short bio about yourself…'
               value={about}
-              rows={5}
+              rows={4}
+              maxLength={500}
               onChange={(e) => {
                 setAbout(e.target.value)
                 setSaveStatus('idle')
               }}
               className='resize-none'
             />
-            <p className='text-xs text-muted-foreground'>
+            <p
+              className={`text-xs ${about.length > 480 ? 'text-amber-500' : 'text-muted-foreground'}`}
+            >
               {about.length} / 500 characters
             </p>
           </div>
 
-          <Separator />
-
-          {/* Actions */}
-          <div className='flex items-center justify-between gap-3'>
-            {/* Feedback */}
-            <span
-              className={`
-                text-sm transition-opacity duration-300
-                ${saveStatus === 'saved' ? 'text-emerald-500 opacity-100' : ''}
-                ${saveStatus === 'error' ? 'text-destructive opacity-100' : ''}
-                ${saveStatus === 'idle' ? 'opacity-0' : ''}
-              `}
-            >
-              {saveStatus === 'saved' && '✓ Changes saved successfully.'}
-              {saveStatus === 'error' && '✗ Something went wrong. Try again.'}
-            </span>
-
-            <div className='ml-auto flex gap-2'>
-              <Button
-                variant='outline'
-                className='rounded-full'
-                disabled={!isDirty || isSaving}
-                onClick={() => {
-                  if (!profile) return
-                  setName(profile.name)
-                  setEmail(profile.email)
-                  setAbout(profile.about)
-                  setPhotoPreview(profile.photoUrl)
-                  setPendingPhotoFile(null)
-                  setSaveStatus('idle')
-                }}
+          {/* Save bar */}
+          {(isDirty || saveStatus !== 'idle') && (
+            <div className='flex items-center justify-between gap-3 rounded-xl border bg-muted/40 px-4 py-3'>
+              <span
+                className={`text-sm ${
+                  saveStatus === 'saved' ?
+                    'flex items-center gap-1.5 text-emerald-600'
+                  : saveStatus === 'error' ? 'text-destructive'
+                  : 'text-muted-foreground'
+                }`}
               >
-                Discard
-              </Button>
-
-              <Button
-                className='rounded-full bg-linear-to-r from-[#1F889E] to-[#20B482] text-white hover:opacity-90'
-                disabled={!isDirty || isSaving}
-                onClick={handleSave}
-              >
-                {isSaving ?
-                  <>
-                    <IconLoader2 size={14} className='mr-1.5 animate-spin' />
-                    {isUploadingPhoto ? 'Uploading…' : 'Saving…'}
-                  </>
-                : 'Save Changes'}
-              </Button>
+                {saveStatus === 'saved' && <IconCheck size={14} />}
+                {saveStatus === 'saved' && 'Changes saved successfully'}
+                {saveStatus === 'error' && 'Something went wrong. Try again.'}
+                {saveStatus === 'idle' && isDirty && 'You have unsaved changes'}
+              </span>
+              <div className='flex gap-2'>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='rounded-full'
+                  disabled={!isDirty || isSaving}
+                  onClick={handleDiscard}
+                >
+                  Discard
+                </Button>
+                <Button
+                  size='sm'
+                  className='rounded-full bg-linear-to-r from-[#1F889E] to-[#20B482] text-white hover:opacity-90'
+                  disabled={!isDirty || isSaving}
+                  onClick={handleSave}
+                >
+                  {isSaving ?
+                    <>
+                      <IconLoader2 size={13} className='mr-1.5 animate-spin' />
+                      {isUploadingPhoto ? 'Uploading…' : 'Saving…'}
+                    </>
+                  : 'Save Changes'}
+                </Button>
+              </div>
             </div>
+          )}
+        </div>
+      </Section>
+
+      <Separator />
+
+      {/* ── Account & Security ──────────────────────────────────────────── */}
+      <Section
+        icon={IconShield}
+        title='Account & Security'
+        description='Read-only account identifiers and security information.'
+      >
+        <div className='grid gap-3 sm:grid-cols-3'>
+          {/* Account ID */}
+          <div className='flex flex-col gap-1 rounded-xl border bg-muted/30 px-4 py-3'>
+            <span className='flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+              <IconId size={11} /> Account ID
+            </span>
+            <span className='truncate font-mono text-sm font-medium'>
+              {profile?.id ?? '—'}
+            </span>
+          </div>
+          {/* Role */}
+          <div className='flex flex-col gap-1 rounded-xl border bg-muted/30 px-4 py-3'>
+            <span className='flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+              <IconLock size={11} /> Role
+            </span>
+            <span className='text-sm font-medium capitalize'>
+              {profile?.role ?? '—'}
+            </span>
+          </div>
+          {/* Member since */}
+          <div className='flex flex-col gap-1 rounded-xl border bg-muted/30 px-4 py-3'>
+            <span className='flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+              <IconShield size={11} /> Member Since
+            </span>
+            <span className='text-sm font-medium'>{memberSince}</span>
           </div>
         </div>
-      </div>
+      </Section>
+
+      <Separator />
+
+      {/* ── Danger Zone ─────────────────────────────────────────────────── */}
+      <Section
+        icon={IconAlertTriangle}
+        title='Danger Zone'
+        description='Irreversible actions. Proceed with caution.'
+      >
+        <div className='rounded-xl border border-destructive/25 bg-destructive/5 p-4'>
+          <div className='flex flex-wrap items-start justify-between gap-4'>
+            <div>
+              <p className='text-sm font-semibold text-destructive'>
+                Delete Account
+              </p>
+              <p className='mt-0.5 text-xs text-muted-foreground'>
+                Permanently remove your account and all associated data. This
+                cannot be undone.
+              </p>
+            </div>
+            <Button
+              variant='outline'
+              size='sm'
+              className='rounded-full border-destructive/40 text-destructive hover:bg-destructive hover:text-destructive-foreground'
+            >
+              <IconAlertTriangle size={13} className='mr-1.5' />
+              Delete Account
+            </Button>
+          </div>
+        </div>
+      </Section>
     </div>
   )
 }
