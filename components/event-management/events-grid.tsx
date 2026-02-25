@@ -28,6 +28,7 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination'
 import { Event } from '@/types/dashboard'
+import { sileo } from 'sileo'
 
 // ─── API stubs ───────────────────────────────────────────────────────────────
 async function apiDeleteEvent(id: string): Promise<void> {
@@ -83,17 +84,30 @@ export function EventsGrid({
 
   // ── handlers ──
   function handleSave(saved: Event) {
+    const isNew = !events.some((e) => e.id === saved.id)
     setEvents((prev) => {
       const exists = prev.some((e) => e.id === saved.id)
       if (exists) return prev.map((e) => (e.id === saved.id ? saved : e))
       return [saved, ...prev]
     })
     setEditTarget(null)
+    sileo.success({
+      title: isNew ? 'Event created!' : 'Event updated',
+      description: isNew ? `"${saved.name}" has been added.` : `"${saved.name}" has been saved.`
+    })
   }
 
   async function handleDelete() {
     if (!deleteTarget) return
-    await apiDeleteEvent(deleteTarget.id)
+    const name = deleteTarget.name
+    await sileo.promise(
+      apiDeleteEvent(deleteTarget.id),
+      {
+        loading: { title: 'Deleting event…', description: `Removing "${name}".` },
+        success: { title: 'Event deleted', description: `"${name}" has been permanently removed.` },
+        error: { title: 'Delete failed', description: 'Something went wrong. Please try again.' }
+      }
+    )
     setEvents((prev) => prev.filter((e) => e.id !== deleteTarget.id))
     setDeleteTarget(null)
     if (paginatedEvents.length === 1 && page > 1) setPage((p) => p - 1)

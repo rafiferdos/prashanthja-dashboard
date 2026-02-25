@@ -28,6 +28,7 @@ import {
 import { useAuthStore } from '@/store/auth.store'
 import { useProfileStore } from '@/store/profile.store'
 import type { ProfileSettings } from '@/types/api'
+import { sileo } from 'sileo'
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -177,6 +178,7 @@ export default function SettingsPage() {
     setPhotoPreview(null)
     setPendingPhotoFile(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
+    sileo.warning({ title: 'Photo removed', description: 'Save changes to apply this update.' })
   }, [])
 
   // ── Save ────────────────────────────────────────────────────────────────────
@@ -184,7 +186,8 @@ export default function SettingsPage() {
     if (!profile) return
     setIsSaving(true)
     setSaveStatus('idle')
-    try {
+
+    const doSave = async () => {
       let resolvedPhotoUrl = profile.photoUrl
       if (pendingPhotoFile) {
         setIsUploadingPhoto(true)
@@ -202,17 +205,23 @@ export default function SettingsPage() {
         about: about.trim(),
         photoUrl: resolvedPhotoUrl
       })
-      if (res.success && res.data) {
-        setProfile(res.data)
-        storeSetProfile(res.data)
-        patchUser({ name: res.data.name, photoUrl: res.data.photoUrl })
-        setPhotoPreview(res.data.photoUrl)
-        setPendingPhotoFile(null)
-        setSaveStatus('saved')
-        setTimeout(() => setSaveStatus('idle'), 3000)
-      } else {
-        setSaveStatus('error')
-      }
+      if (!res.success || !res.data) throw new Error('Update failed')
+      return res.data
+    }
+
+    try {
+      const data = await sileo.promise(doSave, {
+        loading: { title: 'Saving profile…', description: 'Uploading your changes, please wait.' },
+        success: (d) => ({ title: 'Profile updated!', description: `Changes saved for ${d.name}.` }),
+        error: { title: 'Save failed', description: 'Something went wrong. Please try again.' }
+      })
+      setProfile(data)
+      storeSetProfile(data)
+      patchUser({ name: data.name, photoUrl: data.photoUrl })
+      setPhotoPreview(data.photoUrl)
+      setPendingPhotoFile(null)
+      setSaveStatus('saved')
+      setTimeout(() => setSaveStatus('idle'), 3000)
     } catch {
       setSaveStatus('error')
     } finally {
@@ -229,6 +238,7 @@ export default function SettingsPage() {
     setPhotoPreview(profile.photoUrl)
     setPendingPhotoFile(null)
     setSaveStatus('idle')
+    sileo.info({ title: 'Changes discarded', description: 'Your edits have been reset to the last saved state.' })
   }, [profile])
 
   // ── Dirty check ─────────────────────────────────────────────────────────────

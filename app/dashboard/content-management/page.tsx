@@ -8,6 +8,7 @@ import {
 } from '@tabler/icons-react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
+import { sileo } from 'sileo'
 
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -184,11 +185,20 @@ function EditorTab({
 
   async function handleSave() {
     setIsSaving(true)
-    // TODO: persist to API
-    await new Promise((r) => setTimeout(r, 800))
-    setIsSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    try {
+      await sileo.promise(
+        new Promise<void>((r) => setTimeout(r, 800)),
+        {
+          loading: { title: 'Saving document…', description: 'Publishing your latest changes.' },
+          success: { title: 'Document saved!', description: 'Your changes have been published.' },
+          error: { title: 'Save failed', description: 'Something went wrong. Please try again.' }
+        }
+      )
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   return (

@@ -3,6 +3,7 @@
 import { IconChevronDown, IconLogout, IconSettings } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Toaster } from 'sileo'
 
 import { AppSidebar } from '@/components/app-sidebar'
 import {
@@ -144,6 +145,7 @@ export default function DashboardLayout({
           {children}
         </main>
       </SidebarInset>
+      <Toaster position='bottom-right' theme='light' />
     </SidebarProvider>
   )
 }

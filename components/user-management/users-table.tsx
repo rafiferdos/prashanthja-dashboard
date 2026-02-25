@@ -56,6 +56,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { User, UserRole } from '@/types/dashboard'
+import { sileo } from 'sileo'
 
 // ─── API stubs (swap with real calls) ────────────────────────────────────────
 async function apiUpdateUser(user: User): Promise<User> {
@@ -111,7 +112,14 @@ export function UsersTable({
 
   async function handleEditSave() {
     if (!editTarget || !editForm) return
-    const updated = await apiUpdateUser({ ...editTarget, ...editForm })
+    const updated = await sileo.promise(
+      apiUpdateUser({ ...editTarget, ...editForm }),
+      {
+        loading: { title: 'Saving changes…', description: `Updating ${editForm.name}'s profile.` },
+        success: (u) => ({ title: 'User updated', description: `${u.name}'s info has been saved.` }),
+        error: { title: 'Update failed', description: 'Something went wrong. Please try again.' }
+      }
+    )
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)))
     setEditTarget(null)
     setEditForm(null)
@@ -119,16 +127,31 @@ export function UsersTable({
 
   async function handleDelete() {
     if (!deleteTarget) return
-    await apiDeleteUser(deleteTarget.id)
+    const name = deleteTarget.name
+    await sileo.promise(
+      apiDeleteUser(deleteTarget.id),
+      {
+        loading: { title: 'Deleting user…', description: `Removing ${name} from the system.` },
+        success: { title: 'User deleted', description: `${name} has been permanently removed.` },
+        error: { title: 'Delete failed', description: 'Something went wrong. Please try again.' }
+      }
+    )
     setUsers((prev) => prev.filter((u) => u.id !== deleteTarget.id))
     setDeleteTarget(null)
-    // adjust page if last item on current page was deleted
     if (paginatedUsers.length === 1 && page > 1) setPage((p) => p - 1)
   }
 
   async function handleToggleBlock() {
     if (!blockTarget) return
-    const updated = await apiToggleBlock(blockTarget)
+    const isBlocking = blockTarget.status !== 'Blocked'
+    const updated = await sileo.promise(
+      apiToggleBlock(blockTarget),
+      {
+        loading: { title: `${isBlocking ? 'Blocking' : 'Unblocking'} user…`, description: `Updating ${blockTarget.name}'s access.` },
+        success: (u) => ({ title: isBlocking ? 'User blocked' : 'User unblocked', description: `${u.name}'s access has been ${isBlocking ? 'revoked' : 'restored'}.` }),
+        error: { title: 'Action failed', description: 'Something went wrong. Please try again.' }
+      }
+    )
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)))
     setBlockTarget(null)
   }
