@@ -33,15 +33,23 @@ import type { ProfileSettings } from '@/types/api'
 
 function SettingsSkeleton() {
   return (
-    <div className='flex w-full flex-col gap-0'>
-      {/* hero */}
-      <Skeleton className='h-40 w-full rounded-2xl' />
-      {/* identity strip */}
-      <div className='flex items-end gap-4 px-6 -mt-10 pb-4'>
-        <Skeleton className='size-24 rounded-full ring-4 ring-background' />
-        <div className='mb-1 flex flex-col gap-2'>
-          <Skeleton className='h-5 w-40 rounded-lg' />
-          <Skeleton className='h-4 w-28 rounded-full' />
+    <div className='flex w-full flex-col rounded-2xl border bg-card shadow-sm'>
+      {/* banner */}
+      <div className='relative'>
+        <Skeleton className='h-32 w-full rounded-t-2xl' />
+        <div className='absolute bottom-0 left-6 translate-y-1/2'>
+          <Skeleton className='size-[96px] rounded-full ring-4 ring-card' />
+        </div>
+      </div>
+      {/* header */}
+      <div className='flex items-start justify-between px-6 pb-5 pt-14'>
+        <div className='flex flex-col gap-2'>
+          <Skeleton className='h-6 w-36 rounded-lg' />
+          <Skeleton className='h-4 w-56 rounded-full' />
+        </div>
+        <div className='flex flex-col items-end gap-1.5 pt-1'>
+          <Skeleton className='h-5 w-32 rounded-lg' />
+          <Skeleton className='h-3 w-44 rounded-lg' />
         </div>
       </div>
       <Separator />
@@ -49,7 +57,7 @@ function SettingsSkeleton() {
       {[1, 2, 3].map((i) => (
         <div key={i} className='grid gap-8 px-6 py-8 xl:grid-cols-[280px_1fr]'>
           <div className='flex flex-col gap-2'>
-            <Skeleton className='size-8 rounded-lg' />
+            <Skeleton className='size-9 rounded-xl' />
             <Skeleton className='mt-2 h-5 w-32 rounded-lg' />
             <Skeleton className='h-4 w-48 rounded-lg' />
           </div>
@@ -245,78 +253,74 @@ export default function SettingsPage() {
     : '—'
 
   return (
-    <div className='flex w-full flex-col rounded-2xl border bg-card shadow-sm overflow-hidden'>
-      {/* ── Hero banner ─────────────────────────────────────────────────── */}
-      <div className='relative h-44 overflow-hidden bg-linear-to-r from-[#0a3444] via-[#1F889E] to-[#20B482]'>
-        {/* Decorative circles */}
-        <div className='absolute -right-12 -top-12 size-72 rounded-full bg-white/[0.06]' />
-        <div className='absolute -bottom-16 right-40 size-56 rounded-full bg-white/[0.04]' />
-        <div className='absolute -left-10 -bottom-10 size-48 rounded-full bg-white/[0.06]' />
-        <div className='absolute left-1/3 -top-8 size-36 rounded-full bg-white/[0.04]' />
-        {/* Top-left label */}
-        <div className='absolute left-6 top-5 flex items-center gap-2'>
-          <span className='rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm'>
-            Account Settings
-          </span>
+    <div className='flex w-full flex-col rounded-2xl border bg-card shadow-sm'>
+
+      {/* ── Banner + avatar ──────────────────────────────────────────────── */}
+      {/* Wrapper is relative so avatar can hang below banner via translate-y-1/2 */}
+      <div className='relative'>
+        {/* Banner — self-contained gradient with decorative circles */}
+        <div className='h-36 overflow-hidden rounded-t-2xl bg-linear-to-r from-[#0a3444] via-[#1F889E] to-[#20B482] relative'>
+          <div className='absolute -right-16 -top-16 size-80 rounded-full bg-white/[0.07]' />
+          <div className='absolute -bottom-14 right-52 size-56 rounded-full bg-white/[0.04]' />
+          <div className='absolute -left-10 -bottom-10 size-52 rounded-full bg-white/[0.06]' />
+          <div className='absolute left-[38%] -top-8 size-36 rounded-full bg-white/[0.04]' />
         </div>
-        {/* Bottom-left title */}
-        <div className='absolute bottom-16 left-6'>
-          <h1 className='text-2xl font-bold tracking-tight text-white'>Profile Settings</h1>
-          <p className='mt-0.5 text-xs text-white/60'>Manage your public profile and account details</p>
+
+        {/* Avatar — absolutely placed on the bottom edge, half in banner half below */}
+        <div className='absolute bottom-0 left-6 translate-y-1/2 z-10'>
+          <div className='size-[96px] overflow-hidden rounded-full shadow-2xl ring-4 ring-card'>
+            {displayPhoto ?
+              <Image
+                src={displayPhoto}
+                alt={name}
+                width={96}
+                height={96}
+                className='h-full w-full object-cover'
+                unoptimized
+              />
+            : <div className='flex h-full w-full items-center justify-center bg-linear-to-br from-[#1F889E] to-[#20B482] text-2xl font-bold tracking-tight text-white select-none'>
+                {initials}
+              </div>
+            }
+          </div>
+          <button
+            type='button'
+            onClick={() => fileInputRef.current?.click()}
+            className='absolute bottom-0.5 right-0.5 flex size-8 cursor-pointer items-center justify-center rounded-full border-[3px] border-card bg-linear-to-br from-[#1F889E] to-[#20B482] text-white shadow-lg transition-opacity hover:opacity-80'
+            aria-label='Upload photo'
+          >
+            <IconCamera size={14} />
+          </button>
+          <input
+            ref={fileInputRef}
+            type='file'
+            accept='image/png, image/jpeg, image/webp'
+            className='hidden'
+            onChange={handleFileChange}
+          />
         </div>
       </div>
 
-      {/* ── Identity strip ──────────────────────────────────────────────── */}
-      <div className='px-6 pb-5'>
-        <div className='flex flex-wrap items-end gap-5 -mt-14'>
-          {/* Avatar overlapping the banner */}
-          <div className='relative shrink-0'>
-            <div className='size-[104px] overflow-hidden rounded-full shadow-xl ring-4 ring-card'>
-              {displayPhoto ?
-                <Image
-                  src={displayPhoto}
-                  alt={name}
-                  width={104}
-                  height={104}
-                  className='h-full w-full object-cover'
-                  unoptimized
-                />
-              : <div className='flex h-full w-full items-center justify-center bg-linear-to-br from-[#1F889E] to-[#20B482] text-3xl font-bold tracking-tight text-white'>
-                  {initials}
-                </div>
-              }
-            </div>
-            <button
-              type='button'
-              onClick={() => fileInputRef.current?.click()}
-              className='absolute bottom-0.5 right-0.5 flex size-8 cursor-pointer items-center justify-center rounded-full border-[3px] border-card bg-linear-to-br from-[#1F889E] to-[#20B482] text-white shadow-md transition-opacity hover:opacity-85'
-              aria-label='Upload photo'
-            >
-              <IconCamera size={14} />
-            </button>
-            <input
-              ref={fileInputRef}
-              type='file'
-              accept='image/png, image/jpeg, image/webp'
-              className='hidden'
-              onChange={handleFileChange}
-            />
-          </div>
-
-          {/* Name + chips */}
-          <div className='flex flex-col gap-1.5 pb-1'>
-            <span className='text-xl font-bold leading-none tracking-tight'>
-              {name || 'Your Name'}
+      {/* ── Profile info row — top padding clears the half-avatar (96/2 = 48px + 16px gap) */}
+      <div className='flex flex-wrap items-start justify-between gap-3 px-6 pb-5 pt-16'>
+        {/* Name + badges */}
+        <div className='flex flex-col gap-1.5'>
+          <span className='text-xl font-bold leading-tight tracking-tight'>
+            {name || 'Your Name'}
+          </span>
+          <div className='flex flex-wrap items-center gap-2'>
+            <span className='rounded-full bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary'>
+              {profile?.role ?? 'Admin'}
             </span>
-            <div className='flex flex-wrap items-center gap-2'>
-              <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary'>
-                {profile?.role ?? 'Admin'}
-              </span>
-              <span className='text-xs text-muted-foreground'>
-                Member since {memberSince}
-              </span>
-            </div>
+            <span className='text-xs text-muted-foreground'>
+              Member since {memberSince}
+            </span>
           </div>
+        </div>
+        {/* Page label */}
+        <div className='flex flex-col items-end gap-0.5'>
+          <h1 className='text-base font-bold tracking-tight'>Profile Settings</h1>
+          <p className='text-xs text-muted-foreground'>Manage your public profile and account</p>
         </div>
       </div>
 
